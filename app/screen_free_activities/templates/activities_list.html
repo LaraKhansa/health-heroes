@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen-Free Activities - Health Heroes</title>
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+</head>
+<body>
+    <body>
+    <!-- Language detection script -->
+    <script>
+        // Get language from URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentLanguage = urlParams.get('lang') || localStorage.getItem('userLanguage') || 'en';
+        
+        // Save to localStorage
+        localStorage.setItem('userLanguage', currentLanguage);
+        
+        // Set page direction based on language
+        if (currentLanguage === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', 'ar');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', 'en');
+        }
+    </script>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="welcome-section">
+            <h1 class="welcome-text">Welcome, Lara</h1>
+            <h2 class="app-title">Health Heroes ⭐</h2>
+        </div>
+        <button class="logout-btn">Logout ⬆</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        
+        <!-- Page Title -->
+        <div class="page-header">
+            <h2 class="page-title">Screen-Free Activities</h2>
+            <span class="game-icon">🎮</span>
+        </div>
+        <p class="page-subtitle">Engaging activities tailored for your family</p>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <!-- Activity Type Dropdown -->
+            <div class="dropdown-wrapper">
+                <select class="filter-dropdown" id="activity-type">
+                    <option value="all">All Activities</option>
+                    <option value="games">Games & Play</option>
+                    <option value="cooking">Healthy Cooking</option>
+                    <option value="creative">Arts & Crafts</option>
+                    <option value="Outdoor">Outdoor Activities</option>
+                    <option value="reading">Reading & Storytelling</option>
+                    <option value="science">Science Experiments</option>
+                </select>
+            </div>
+
+            <!-- Children Selection Dropdown -->
+            <div class="dropdown-wrapper">
+                <select class="filter-dropdown" id="child-selection">
+                    <option value="all">All Children</option>
+                    <option value="child1">Sarah (5 years)</option>
+                    <option value="child2">Ahmed (8 years)</option>
+                    <option value="child3">Layla (3 years)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Perfect for Your Home Section -->
+        <div class="home-resources">
+            <h3 class="section-title">Perfect for Your Home</h3>
+            <div class="resources-container">
+                <div class="resource-item">
+                    <span class="check-icon">✓</span>
+                    <span>Balcony Space</span>
+                </div>
+                <div class="resource-item">
+                    <span class="check-icon">✓</span>
+                    <span>Kitchen Access</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Get New Ideas Button -->
+        <button class="new-ideas-btn">Get New Ideas</button>
+
+        <!-- Suggestions Header -->
+        <div class="suggestions-header">
+            <span class="section-title">Suggestions</span>
+            <span class="star-icon">⭐</span>
+        </div>
+        
+        <!-- Loading Spinner (add this new section) -->
+        <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading activities...</p>
+        </div>
+
+        <!-- Activities List (from database) -->
+        {% if activities %}
+            <div class="activities-grid">
+                {% for activity in activities %}
+                <div class="activity-card" data-activity-id="{{ activity.id }}">
+                    <div class="activity-header">
+                        <h3 class="activity-title">{{ activity.title_en }}</h3>
+                        <span class="activity-duration">{{ activity.duration }}</span>
+                    </div>
+                    
+                    <p class="activity-age">Ages: {{ activity.age_range }}</p>
+                    <p class="activity-description">{{ activity.description_en }}</p>
+                    
+                    <div class="materials-section">
+                        <h4 class="materials-title">Materials Needed</h4>
+                        <div class="materials-list">
+                            {% for material in activity.get_materials() %}
+                            <div class="material-badge {{ ['purple', 'green', 'orange', 'red', 'blue'][loop.index0 % 5] }}">
+                                {% if material.icon %}
+                                <span class="material-icon">{{ material.icon }}</span>
+                                {% endif %}
+                                <span>{{ material.name_en }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h4 class="instructions-title">Instructions</h4>
+                        <ol class="instructions-list">
+                            {% for step in activity.get_steps_en()[:2] %}
+                            <li>{{ step[:50] }}...</li>
+                            {% endfor %}
+                        </ol>
+                        {% if activity.get_steps_en()|length > 2 %}
+                        <button class="more-steps">+ {{ activity.get_steps_en()|length - 2 }} more steps...</button>
+                        {% endif %}
+                    </div>
+
+                    <button class="start-activity-btn" onclick="openActivity({{ activity.id }})">Start Activity</button>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; padding: 40px; color: #999;">
+                No activities available. Try changing filters!
+            </p>
+        {% endif %}
+
+    </main>
+
+    <!-- Activity Detail Modal -->
+    <div class="modal-overlay" id="activityModal">
+        <div class="modal-container">
+            
+            <!-- Close Button -->
+            <button class="modal-close" id="closeModal">✕</button>
+            
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2 class="modal-title">Indoor Treasure Hunt</h2>
+                <p class="modal-step-indicator">Step 2 of 5</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width: 40%;"></div>
+            </div>
+            <p class="progress-text">1/5 steps</p>
+
+            <!-- Main Content Box -->
+            <div class="modal-content-box">
+                <p class="activity-intro">Create a fun treasure hunt using items around your home</p>
+            </div>
+
+            <!-- Step Card with Number and Instruction -->
+            <div class="step-card">
+                <div class="step-number-bubble">
+                    <span class="step-num">2</span>
+                </div>
+                <div class="step-text">
+                    <p>Create simple picture clues for younger children or written clues for older ones!</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="modal-actions">
+                <button class="complete-btn" id="completeBtn">Mark as Complete</button>
+                <button class="pause-btn" id="pauseBtn">Pause & Celebrate! ✨</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('screen_free.static', filename='js/activities.js') }}"></script>
+</body>
+</html>
