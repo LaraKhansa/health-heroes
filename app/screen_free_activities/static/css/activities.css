@@ -404,10 +404,12 @@ body {
     font-size: 14px;
     line-height: 1.8;
     font-weight: 400;
+    padding-right: 20px; 
 }
 
 .instructions-list li {
     margin-bottom: 8px;
+    padding: 5px 0; 
 }
 
 .more-steps {

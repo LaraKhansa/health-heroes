@@ -108,12 +108,12 @@
                 {% for activity in activities %}
                 <div class="activity-card" data-activity-id="{{ activity.id }}">
                     <div class="activity-header">
-                        <h3 class="activity-title">{{ activity.title_en }}</h3>
+                        <h3 class="activity-title">{{ activity.title_ar if language == 'ar' else activity.title_en }}</h3>
                         <span class="activity-duration">{{ activity.duration }}</span>
                     </div>
                     
                     <p class="activity-age">Ages: {{ activity.age_range }}</p>
-                    <p class="activity-description">{{ activity.description_en }}</p>
+                    <p class="activity-description">{{ activity.description_ar if language == 'ar' else activity.description_en }}</p>
                     
                     <div class="materials-section">
                         <h4 class="materials-title">Materials Needed</h4>
@@ -123,7 +123,7 @@
                                 {% if material.icon %}
                                 <span class="material-icon">{{ material.icon }}</span>
                                 {% endif %}
-                                <span>{{ material.name_en }}</span>
+                                <span>{{ material.name_ar if language == 'ar' else material.name_en }}</span>
                             </div>
                             {% endfor %}
                         </div>
@@ -132,12 +132,12 @@
                     <div class="instructions-section">
                         <h4 class="instructions-title">Instructions</h4>
                         <ol class="instructions-list">
-                            {% for step in activity.get_steps_en()[:2] %}
+                            {% for step in (activity.get_steps_ar() if language == 'ar' else activity.get_steps_en())[:2] %}
                             <li>{{ step[:50] }}...</li>
                             {% endfor %}
                         </ol>
-                        {% if activity.get_steps_en()|length > 2 %}
-                        <button class="more-steps">+ {{ activity.get_steps_en()|length - 2 }} more steps...</button>
+                        {% if (activity.get_steps_ar() if language == 'ar' else activity.get_steps_en())|length > 2 %}
+                        <button class="more-steps">+ {{ (activity.get_steps_ar() if language == 'ar' else activity.get_steps_en())|length - 2 }} more steps...</button>
                         {% endif %}
                     </div>
 
