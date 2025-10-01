@@ -30,10 +30,14 @@ init_db(app)
 from app.screen_free_activities.routes import screen_free_bp
 from app.auth.routes import auth_bp
 from app.profile.routes import profile_bp
+from app.dashboard.routes import dashboard_bp
+
+
 
 app.register_blueprint(screen_free_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(dashboard_bp, url_prefix="/")
 
 # Home route
 @app.route('/')
@@ -183,7 +187,7 @@ def home():
                 <a href="/activities?lang=en" id="activitiesLink">Screen-Free Activities</a>
                 <a href="#" class="coming-soon" id="mealsLink">Meal Recommender (Coming Soon)</a>
                 <a href="#" class="coming-soon" id="chatLink">AI Chat (Coming Soon)</a>
-                <a href="#" class="coming-soon" id="dashboardLink">Progress Dashboard (Coming Soon)</a>
+                <a href="/dashboard" id="dashboardLink">Progress Dashboard</a>
             </div>
         </div>
         
@@ -234,3 +238,4 @@ if __name__ == '__main__':
     print("  🌟 HEALTH HEROES - Starting Application")
     print("=" * 70)
     app.run(debug=True, port=5000)
+
