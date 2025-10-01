@@ -86,7 +86,10 @@ function updatePageText() {
     const appTitle = document.querySelector('.app-title');
     const logoutBtn = document.querySelector('.logout-btn');
     
-    if (welcomeText) welcomeText.textContent = `${t('welcome')}, Lara`;
+    if (welcomeText) {
+        const userName = welcomeText.textContent.split(', ')[1] || 'User';
+        welcomeText.textContent = `${t('welcome')}, ${userName}`;
+    }
     if (appTitle) appTitle.textContent = t('appTitle');
     if (logoutBtn) logoutBtn.textContent = t('logout');
     

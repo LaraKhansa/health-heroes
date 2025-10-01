@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Child - Health Heroes</title>
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <style>
+        /* Additional styles for add child page */
+        .setup-container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 40px;
+            background-image: url("{{ url_for('profile.static', filename='images/setup.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .setup-header h1 {
+            color: #2e7d32;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-family: "Paytone One", sans-serif;
+        }
+        
+        .setup-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 15px;
+        }
+        
+        .step-indicator span {
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section h3 {
+            color: #2e7d32;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-family: "Paytone One", sans-serif;
+        }
+        
+        .form-section p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Nunito', sans-serif;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .radio-item:hover {
+            border-color: #66bb6a;
+            background: #f0f8f0;
+        }
+        
+        .radio-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        /* Arabic RTL padding fix */
+        [dir="rtl"] .radio-item input[type="radio"] {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        .radio-item label {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #424242;
+            flex: 1;
+        }
+        
+        .radio-item input[type="radio"]:checked + label {
+            color: #2e7d32;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #66bb6a;
+            background: #f0f8f0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        /* Arabic RTL padding fix */
+        [dir="rtl"] .checkbox-item input[type="checkbox"] {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #424242;
+            flex: 1;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + label {
+            color: #2e7d32;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-submit {
+            flex: 1;
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            flex: 1;
+            background: linear-gradient(135deg, #9575cd 0%, #7e57c2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-previous {
+            background: #e0e0e0;
+            color: #424242;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-previous:hover {
+            transform: translateY(-2px);
+            background: #d0d0d0;
+        }
+        
+        .skip-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .skip-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .skip-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash {
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .flash.success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 2px solid #66bb6a;
+        }
+        
+        .flash.error {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 2px solid #e57373;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px !important;
+            }
+            
+            .setup-container {
+                padding: 30px 25px;
+                margin: 20px auto;
+                max-width: 100%;
+            }
+            
+            .setup-header h1 {
+                font-size: 28px;
+            }
+            
+            .setup-header p {
+                font-size: 14px;
+            }
+            
+            .form-section h3 {
+                font-size: 18px;
+            }
+            
+            .form-section p {
+                font-size: 13px;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .checkbox-item {
+                padding: 12px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .btn-submit,
+            .btn-secondary,
+            .btn-previous {
+                padding: 16px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .setup-container {
+                padding: 25px 20px;
+                border-radius: 20px;
+                margin: 10px auto;
+            }
+            
+            .setup-header h1 {
+                font-size: 24px;
+            }
+            
+            .step-indicator {
+                padding: 12px;
+            }
+            
+            .step-indicator span {
+                font-size: 16px;
+            }
+            
+            .form-section h3 {
+                font-size: 16px;
+            }
+            
+            .checkbox-item label,
+            .radio-item label {
+                font-size: 13px;
+            }
+            
+            .form-group input,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+    </style>
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh; padding: 20px;">
+    
+    <div class="setup-container">
+        <!-- Header -->
+        <div class="setup-header">
+            <h1 id="pageTitle">Add Your Child 👶</h1>
+            <p id="pageSubtitle">Tell us about your child so we can personalize their activities</p>
+        </div>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <span id="stepIndicator">Step 2 of 2</span>
+        </div>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Add Child Form -->
+        <form method="POST" action="{{ url_for('profile.add_child') }}" id="addChildForm">
+            
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3 id="basicInfoTitle">👤 Basic Information</h3>
+                
+                <div class="form-group">
+                    <label for="name" id="nameLabel">Child's Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthdate" id="birthdateLabel">Date of Birth *</label>
+                    <input type="date" id="birthdate" name="birthdate" required max="{{ today }}">
+                </div>
+                
+                <div class="form-group">
+                    <label id="genderLabel">Gender *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="male" name="gender" value="male" required>
+                            <label for="male" data-en="Male" data-ar="ذكر">Male</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="female" name="gender" value="female" required>
+                            <label for="female" data-en="Female" data-ar="أنثى">Female</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interests -->
+            <div class="form-section">
+                <h3 id="interestsTitle">🎨 What does your child enjoy?</h3>
+                <p id="interestsDesc">Select their interests (optional)</p>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="sports" name="interests" value="sports">
+                        <label for="sports" data-en="Sports" data-ar="رياضة">Sports</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="arts" name="interests" value="arts">
+                        <label for="arts" data-en="Arts & Crafts" data-ar="فنون">Arts & Crafts</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cooking" name="interests" value="cooking">
+                        <label for="cooking" data-en="Cooking" data-ar="طبخ">Cooking</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="science" name="interests" value="science">
+                        <label for="science" data-en="Science" data-ar="علوم">Science</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="reading" name="interests" value="reading">
+                        <label for="reading" data-en="Reading" data-ar="قراءة">Reading</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="outdoor" name="interests" value="outdoor">
+                        <label for="outdoor" data-en="Outdoor Play" data-ar="لعب خارجي">Outdoor Play</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dietary Restrictions -->
+            <div class="form-section">
+                <h3 id="allergyTitle">🍎 Any allergies or dietary restrictions?</h3>
+                <p id="allergyDesc">Select all that apply (optional)</p>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="nuts_child" name="dietary_restrictions" value="nuts">
+                        <label for="nuts_child" data-en="Nuts" data-ar="المكسرات">Nuts</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="dairy_child" name="dietary_restrictions" value="dairy">
+                        <label for="dairy_child" data-en="Dairy" data-ar="الألبان">Dairy</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="gluten_child" name="dietary_restrictions" value="gluten">
+                        <label for="gluten_child" data-en="Gluten" data-ar="الجلوتين">Gluten</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="eggs_child" name="dietary_restrictions" value="eggs">
+                        <label for="eggs_child" data-en="Eggs" data-ar="البيض">Eggs</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="seafood_child" name="dietary_restrictions" value="seafood">
+                        <label for="seafood_child" data-en="Seafood" data-ar="المأكولات البحرية">Seafood</label>
+                    </div>
+                </div>
+                
+                <!-- Other Allergies Text Field - NEW -->
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="other_allergies" id="otherAllergiesLabel">Other allergies (comma-separated)</label>
+                    <input type="text" id="other_allergies" name="other_allergies" placeholder="e.g., soy, fish, shellfish">
+                </div>
+            </div>
+            
+            <!-- Special Needs -->
+            <div class="form-section">
+                <h3 id="specialNeedsTitle">💙 Special Needs (Optional)</h3>
+                <p id="specialNeedsDesc">Any special needs or notes we should know about?</p>
+                
+                <div class="form-group">
+                    <textarea id="special_needs" name="special_needs" placeholder="Optional"></textarea>
+                </div>
+            </div>
+            
+            <!-- Hidden field for add another -->
+            <input type="hidden" name="add_another" id="add_another" value="no">
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <a href="{{ url_for('profile.setup') }}" class="btn-previous" id="btnPrevious">← Previous</a>
+                <button type="submit" class="btn-submit" id="btnFinish" onclick="document.getElementById('add_another').value='no'">
+                    Finish Setup ✓
+                </button>
+            </div>
+            
+            <div class="button-group" style="margin-top: 15px;">
+                <button type="submit" class="btn-secondary" id="btnAddAnother" onclick="document.getElementById('add_another').value='yes'" style="width: 100%;">
+                    Add Another Child +
+                </button>
+            </div>
+            
+            <div class="skip-link">
+                <a href="{{ url_for('home') }}" id="skipLink">Skip for now</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Get saved language
+        let currentLanguage = localStorage.getItem('userLanguage') || 'en';
+        
+        // Set max date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('birthdate').setAttribute('max', today);
+        
+        // Update page based on language
+        updatePageLanguage();
+        
+        function updatePageLanguage() {
+            if (currentLanguage === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+                
+                // Update titles
+                document.getElementById('pageTitle').textContent = 'أضف طفلك 👶';
+                document.getElementById('pageSubtitle').textContent = 'أخبرنا عن طفلك حتى نتمكن من تخصيص أنشطته';
+                document.getElementById('stepIndicator').textContent = 'خطوة 2 من 2';
+                
+                document.getElementById('basicInfoTitle').textContent = '👤 المعلومات الأساسية';
+                document.getElementById('nameLabel').textContent = 'اسم الطفل *';
+                document.getElementById('birthdateLabel').textContent = 'تاريخ الميلاد *';
+                document.getElementById('genderLabel').textContent = 'الجنس *';
+                
+                document.getElementById('interestsTitle').textContent = '🎨 ماذا يحب طفلك؟';
+                document.getElementById('interestsDesc').textContent = 'اختر اهتماماته (اختياري)';
+                
+                document.getElementById('allergyTitle').textContent = '🍎 هل يعاني من حساسية أو قيود غذائية؟';
+                document.getElementById('allergyDesc').textContent = 'اختر كل ما ينطبق (اختياري)';
+                document.getElementById('otherAllergiesLabel').textContent = 'حساسيات أخرى (مفصولة بفواصل)';
+                
+                document.getElementById('specialNeedsTitle').textContent = '💙 احتياجات خاصة (اختياري)';
+                document.getElementById('specialNeedsDesc').textContent = 'أي احتياجات خاصة أو ملاحظات يجب أن نعرفها؟';
+                
+                document.getElementById('btnPrevious').textContent = '→ السابق';
+                document.getElementById('btnFinish').textContent = 'إنهاء الإعداد ✓';
+                document.getElementById('btnAddAnother').textContent = 'إضافة طفل آخر +';
+                document.getElementById('skipLink').textContent = 'تخطي الآن';
+                
+                // Update labels
+                document.querySelectorAll('.checkbox-item label, .radio-item label').forEach(label => {
+                    const arText = label.getAttribute('data-ar');
+                    if (arText) label.textContent = arText;
+                });
+                
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'en');
+                
+                // Update titles
+                document.getElementById('pageTitle').textContent = 'Add Your Child 👶';
+                document.getElementById('pageSubtitle').textContent = 'Tell us about your child so we can personalize their activities';
+                document.getElementById('stepIndicator').textContent = 'Step 2 of 2';
+                
+                document.getElementById('basicInfoTitle').textContent = '👤 Basic Information';
+                document.getElementById('nameLabel').textContent = "Child's Name *";
+                document.getElementById('birthdateLabel').textContent = 'Date of Birth *';
+                document.getElementById('genderLabel').textContent = 'Gender *';
+                
+                document.getElementById('interestsTitle').textContent = '🎨 What does your child enjoy?';
+                document.getElementById('interestsDesc').textContent = 'Select their interests (optional)';
+                
+                document.getElementById('allergyTitle').textContent = '🍎 Any allergies or dietary restrictions?';
+                document.getElementById('allergyDesc').textContent = 'Select all that apply (optional)';
+                document.getElementById('otherAllergiesLabel').textContent = 'Other allergies (comma-separated)';
+                
+                document.getElementById('specialNeedsTitle').textContent = '💙 Special Needs (Optional)';
+                document.getElementById('specialNeedsDesc').textContent = 'Any special needs or notes we should know about?';
+                
+                document.getElementById('btnPrevious').textContent = '← Previous';
+                document.getElementById('btnFinish').textContent = 'Finish Setup ✓';
+                document.getElementById('btnAddAnother').textContent = 'Add Another Child +';
+                document.getElementById('skipLink').textContent = 'Skip for now';
+                
+                // Update labels
+                document.querySelectorAll('.checkbox-item label, .radio-item label').forEach(label => {
+                    const enText = label.getAttribute('data-en');
+                    if (enText) label.textContent = enText;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

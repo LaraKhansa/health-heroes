@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Profile Setup - Health Heroes</title>
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <style>
+        /* Additional styles for setup page */
+        .setup-container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 40px;
+            background-image: url("{{ url_for('profile.static', filename='images/setup.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .setup-header h1 {
+            color: #2e7d32;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-family: "Paytone One", sans-serif;
+        }
+        
+        .setup-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 15px;
+        }
+        
+        .step-indicator span {
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .form-section {
+            margin-bottom: 35px;
+        }
+        
+        .form-section h3 {
+            color: #2e7d32;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-family: "Paytone One", sans-serif;
+        }
+        
+        .form-section p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #66bb6a;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2e7d32;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #66bb6a;
+            background: #f0f8f0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        /* Arabic RTL padding fix */
+        [dir="rtl"] .checkbox-item input[type="checkbox"] {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #424242;
+            flex: 1;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked + label {
+            color: #2e7d32;
+        }
+        
+        .time-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .time-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .time-group label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .time-group input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .time-group input:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+        
+        .btn-next {
+            width: 100%;
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .btn-next:hover {
+            transform: translateY(-2px);
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash {
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .flash.success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 2px solid #66bb6a;
+        }
+        
+        .flash.error {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 2px solid #e57373;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px !important;
+            }
+            
+            .setup-container {
+                padding: 30px 25px;
+                margin: 20px auto;
+                max-width: 100%;
+            }
+            
+            .setup-header h1 {
+                font-size: 28px;
+            }
+            
+            .setup-header p {
+                font-size: 14px;
+            }
+            
+            .form-section h3 {
+                font-size: 18px;
+            }
+            
+            .form-section p {
+                font-size: 13px;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .checkbox-item {
+                padding: 12px;
+            }
+            
+            .time-inputs {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .btn-next {
+                padding: 16px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .setup-container {
+                padding: 25px 20px;
+                border-radius: 20px;
+                margin: 10px auto;
+            }
+            
+            .setup-header h1 {
+                font-size: 24px;
+            }
+            
+            .step-indicator {
+                padding: 12px;
+            }
+            
+            .step-indicator span {
+                font-size: 16px;
+            }
+            
+            .form-section h3 {
+                font-size: 16px;
+            }
+            
+            .checkbox-item label {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh; padding: 20px;">
+    
+    <div class="setup-container">
+        <!-- Header -->
+        <div class="setup-header">
+            <h1 id="setupTitle" style="margin-top: 20px;">Let's Set Up Your Family Profile! 🏡</h1>
+            <p id="setupSubtitle">This will help us personalize activities for your family</p>
+        </div>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <span id="stepIndicator">Step 1 of 2</span>
+        </div>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Setup Form -->
+        <form method="POST" action="{{ url_for('profile.setup') }}" id="setupForm">
+            
+            <!-- Language Preference Section - MOVED TO TOP -->
+            <div class="form-section">
+                <h3 id="languageTitle">🌍 Preferred Language</h3>
+                <p id="languageDesc">Choose your preferred language for the app</p>
+                
+                <div class="form-group">
+                    <select name="language" id="languageSelect" class="language-selector">
+                        <option value="en">English</option>
+                        <option value="ar">العربية (Arabic)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Home Resources Section -->
+            <div class="form-section">
+                <h3 id="homeResourcesTitle">🏠 What spaces do you have at home?</h3>
+                <p id="homeResourcesDesc">Select all that apply. We'll suggest activities that fit your space!</p>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="kitchen" name="home_resources" value="kitchen">
+                        <label for="kitchen" data-en="Kitchen Access" data-ar="المطبخ">Kitchen Access</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="balcony" name="home_resources" value="balcony">
+                        <label for="balcony" data-en="Balcony/Terrace" data-ar="الشرفة">Balcony/Terrace</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="garden" name="home_resources" value="garden">
+                        <label for="garden" data-en="Garden/Backyard" data-ar="الحديقة">Garden/Backyard</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="living_room" name="home_resources" value="living_room">
+                        <label for="living_room" data-en="Living Room Space" data-ar="غرفة المعيشة">Living Room Space</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="outdoor_nearby" name="home_resources" value="outdoor_nearby">
+                        <label for="outdoor_nearby" data-en="Nearby Park/Outdoor" data-ar="حديقة قريبة">Nearby Park/Outdoor</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typical Meal Times Section - NEW -->
+            <div class="form-section">
+                <h3 id="mealTimesTitle">🍽️ Typical Meal Times</h3>
+                <p id="mealTimesDesc">When does your family usually eat? (helps us recommend meals)</p>
+                
+                <div class="time-inputs">
+                    <div class="time-group">
+                        <label for="breakfast_time" id="breakfastLabel">Breakfast</label>
+                        <input type="time" id="breakfast_time" name="breakfast_time" value="07:00">
+                    </div>
+                    <div class="time-group">
+                        <label for="lunch_time" id="lunchLabel">Lunch</label>
+                        <input type="time" id="lunch_time" name="lunch_time" value="13:00">
+                    </div>
+                    <div class="time-group">
+                        <label for="dinner_time" id="dinnerLabel">Dinner</label>
+                        <input type="time" id="dinner_time" name="dinner_time" value="19:00">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn-next" id="btnNext">Next: Add Your Children →</button>
+        </form>
+    </div>
+    
+    <script>
+        // Get saved language or default to English
+        let currentLanguage = localStorage.getItem('userLanguage') || 'en';
+        
+        // Set language selector
+        document.getElementById('languageSelect').value = currentLanguage;
+        
+        // Update page based on language
+        updatePageLanguage();
+        
+        // Listen for language changes
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            currentLanguage = this.value;
+            localStorage.setItem('userLanguage', currentLanguage);
+            updatePageLanguage();
+        });
+        
+        function updatePageLanguage() {
+            if (currentLanguage === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+                
+                // Update titles and descriptions
+                document.getElementById('setupTitle').textContent = 'لنقم بإعداد ملف عائلتك! 🏡';
+                document.getElementById('setupSubtitle').textContent = 'سيساعدنا هذا في تخصيص الأنشطة لعائلتك';
+                document.getElementById('stepIndicator').textContent = 'خطوة 1 من 2';
+                
+                document.getElementById('languageTitle').textContent = '🌍 اللغة المفضلة';
+                document.getElementById('languageDesc').textContent = 'اختر لغتك المفضلة للتطبيق';
+                
+                document.getElementById('homeResourcesTitle').textContent = '🏠 ما هي المساحات المتوفرة في منزلك؟';
+                document.getElementById('homeResourcesDesc').textContent = 'اختر كل ما ينطبق. سنقترح أنشطة تناسب مساحتك!';
+                
+                document.getElementById('mealTimesTitle').textContent = '🍽️ أوقات الوجبات المعتادة';
+                document.getElementById('mealTimesDesc').textContent = 'متى تتناول عائلتك الطعام عادة؟ (يساعدنا في اقتراح الوجبات)';
+                document.getElementById('breakfastLabel').textContent = 'الإفطار';
+                document.getElementById('lunchLabel').textContent = 'الغداء';
+                document.getElementById('dinnerLabel').textContent = 'العشاء';
+                
+                document.getElementById('btnNext').textContent = 'التالي: أضف أطفالك ←';
+                
+                // Update checkbox labels
+                document.querySelectorAll('.checkbox-item label').forEach(label => {
+                    const arText = label.getAttribute('data-ar');
+                    if (arText) label.textContent = arText;
+                });
+                
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'en');
+                
+                // Update titles and descriptions
+                document.getElementById('setupTitle').textContent = "Let's Set Up Your Family Profile! 🏡";
+                document.getElementById('setupSubtitle').textContent = "This will help us personalize activities for your family";
+                document.getElementById('stepIndicator').textContent = 'Step 1 of 2';
+                
+                document.getElementById('languageTitle').textContent = '🌍 Preferred Language';
+                document.getElementById('languageDesc').textContent = 'Choose your preferred language for the app';
+                
+                document.getElementById('homeResourcesTitle').textContent = '🏠 What spaces do you have at home?';
+                document.getElementById('homeResourcesDesc').textContent = "Select all that apply. We'll suggest activities that fit your space!";
+                
+                document.getElementById('mealTimesTitle').textContent = '🍽️ Typical Meal Times';
+                document.getElementById('mealTimesDesc').textContent = 'When does your family usually eat? (helps us recommend meals)';
+                document.getElementById('breakfastLabel').textContent = 'Breakfast';
+                document.getElementById('lunchLabel').textContent = 'Lunch';
+                document.getElementById('dinnerLabel').textContent = 'Dinner';
+                
+                document.getElementById('btnNext').textContent = 'Next: Add Your Children →';
+                
+                // Update checkbox labels
+                document.querySelectorAll('.checkbox-item label').forEach(label => {
+                    const enText = label.getAttribute('data-en');
+                    if (enText) label.textContent = enText;
+                });
+            }
+        }
+
+        // Form validation
+        document.getElementById('setupForm').addEventListener('submit', function(e) {
+            const homeResources = document.querySelectorAll('input[name="home_resources"]:checked');
+            const language = document.getElementById('languageSelect').value;
+            const breakfastTime = document.getElementById('breakfast_time').value;
+            const lunchTime = document.getElementById('lunch_time').value;
+            const dinnerTime = document.getElementById('dinner_time').value;
+            
+            // Validate at least one home resource is selected
+            if (homeResources.length === 0) {
+                e.preventDefault();
+                alert(currentLanguage === 'ar' 
+                    ? 'الرجاء اختيار مساحة واحدة على الأقل في منزلك' 
+                    : 'Please select at least one home space');
+                return false;
+            }
+            
+            // Validate language is selected
+            if (!language) {
+                e.preventDefault();
+                alert(currentLanguage === 'ar' 
+                    ? 'الرجاء اختيار لغتك المفضلة' 
+                    : 'Please select your preferred language');
+                return false;
+            }
+            
+            // Validate meal times are filled
+            if (!breakfastTime || !lunchTime || !dinnerTime) {
+                e.preventDefault();
+                alert(currentLanguage === 'ar' 
+                    ? 'الرجاء ملء جميع أوقات الوجبات' 
+                    : 'Please fill in all meal times');
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+</body>
+</html>

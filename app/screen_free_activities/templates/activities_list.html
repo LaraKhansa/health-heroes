@@ -30,10 +30,10 @@
     <!-- Header -->
     <header class="header">
         <div class="welcome-section">
-            <h1 class="welcome-text">Welcome, Lara</h1>
+            <h1 class="welcome-text">Welcome, {{ user_name }}</h1>
             <h2 class="app-title">Health Heroes ⭐</h2>
         </div>
-        <button class="logout-btn">Logout ⬆</button>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Logout ⬆</a>
     </header>
 
     <!-- Main Content -->

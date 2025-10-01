@@ -2,7 +2,7 @@
 Database initialization
 """
 
-from db.models import db, Activity
+from db.models import db, Activity, User, FamilyProfile, Child, ActivityCompletion
 
 
 def init_db(app):
@@ -18,7 +18,3 @@ def init_db(app):
         # Create all tables
         db.create_all()
         print("✅ Database initialized!")
-        
-        # Print activity count
-        activity_count = Activity.query.count()
-        print(f"📊 Activities in database: {activity_count}")

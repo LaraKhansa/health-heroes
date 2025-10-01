@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
 from db.models import db, Activity
 from sqlalchemy import func
 import random
@@ -20,6 +20,14 @@ def activities_list():
     Main activities page
     Shows filtered activities based on user preferences
     """
+    # Check if user is logged in
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    # Get user name for display
+    user_name = session.get('user_name', 'User')
+    
     # For now, hardcode home resources (later from family profile)
     home_resources = ["balcony", "kitchen"]
     
@@ -52,7 +60,8 @@ def activities_list():
         home_resources=home_resources,
         language=language,
         category_filter=category_filter,
-        child_filter=child_filter
+        child_filter=child_filter,
+        user_name=user_name
     )
 
 
