@@ -224,7 +224,7 @@ def home():
                     document.getElementById('activitiesLink').textContent = 'Screen-Free Activities';
                     document.getElementById('mealsLink').textContent = 'Meal Recommender (Coming Soon)';
                     document.getElementById('chatLink').textContent = 'AI Chat (Coming Soon)';
-                    document.getElementById('dashboardLink').textContent = 'Progress Dashboard (Coming Soon)';
+                    document.getElementById('dashboardLink').textContent = 'Progress Dashboard';
                     document.body.style.direction = 'ltr';
                 }}
             }}
