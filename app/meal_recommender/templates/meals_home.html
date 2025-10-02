@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Recommender - Health Heroes</title>
+    <!-- Base styles from activities -->
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <!-- Meal recommender specific styles -->
+    <link rel="stylesheet" href="{{ url_for('meals.static', filename='css/meals.css') }}">
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh;">
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-icon">🍳</div>
+            <h3 class="loading-title" id="loadingTitle">Generating Your Meal</h3>
+            <p class="loading-subtitle" id="loadingSubtitle">Our AI chef is preparing something delicious...</p>
+            
+            <div class="cooking-animation">
+                <span class="cooking-icon">👨‍🍳</span>
+                <span class="cooking-icon">🥘</span>
+                <span class="cooking-icon">✨</span>
+            </div>
+            
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+            
+            <div class="loading-dots" style="margin-top: 20px;">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Language detection script -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentLanguage = urlParams.get('lang') || localStorage.getItem('userLanguage') || 'en';
+        localStorage.setItem('userLanguage', currentLanguage);
+        
+        if (currentLanguage === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', 'ar');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', 'en');
+        }
+    </script>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="welcome-section">
+            <h1 class="welcome-text" id="welcomeText">Welcome, {{ user_name }}</h1>
+            <h2 class="app-title">Health Heroes ⭐</h2>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn" id="logoutBtn">Logout ⬆</a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="meal-container">
+        
+        <!-- Page Header -->
+        <div class="meal-header">
+            <h1 id="pageTitle">🍽️ Meal Recommender</h1>
+            <p id="pageSubtitle">Create healthy, personalized meals for your family</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages" style="margin-bottom: 20px;">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}" style="padding: 15px; border-radius: 12px; margin-bottom: 10px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Meal Generation Form -->
+        <form method="POST" action="{{ url_for('meals.generate_meal_route') }}" id="mealForm">
+            
+            <!-- Hidden language field -->
+            <input type="hidden" name="language" value="{{ language }}">
+
+            <!-- Ingredient Selection -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span>🥗</span>
+                    <span id="ingredientsTitle">Select Your Ingredients</span>
+                </h2>
+                <p class="section-subtitle" id="ingredientsDesc">
+                    Choose the ingredients you have at home
+                </p>
+
+                {% for category_key, category_data in ingredients.items() %}
+                <div class="ingredient-category">
+                    <div class="category-header" data-category="{{ category_key }}">
+                        <span>{{ category_data['ar'] if language == 'ar' else category_data['en'] }}</span>
+                    </div>
+                    <div class="ingredients-grid">
+                        {% for item in category_data['items'] %}
+                        <div class="ingredient-item">
+                            <input type="checkbox" 
+                                   id="ing_{{ loop.index0 }}_{{ category_key }}" 
+                                   name="ingredients" 
+                                   value="{{ item.name_en }}"
+                                   onchange="updateSelectedCount()">
+                            <label for="ing_{{ loop.index0 }}_{{ category_key }}" 
+                                   data-en="{{ item.name_en }}" 
+                                   data-ar="{{ item.name_ar }}">
+                                <span class="ingredient-icon">{{ item.icon }}</span>
+                                <span class="ingredient-name">{{ item.name_ar if language == 'ar' else item.name_en }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Custom Ingredient -->
+                <div style="margin-top: 25px;">
+                    <label for="custom_ingredient" style="display: block; margin-bottom: 10px; font-weight: 600; color: #424242;">
+                        <span id="customIngLabel">+ Add Custom Ingredients (comma-separated)</span>
+                    </label>
+                    <input type="text" 
+                           id="custom_ingredient" 
+                           name="custom_ingredient" 
+                           class="custom-ingredient-input"
+                           placeholder="">
+                </div>
+
+                <!-- Selected Count -->
+                <div class="selected-count" id="selectedCount">
+                    <span id="countText">0 ingredients selected</span>
+                </div>
+            </div>
+
+            <!-- Cuisine Type Selection -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span>🌍</span>
+                    <span id="cuisineTypeTitle">Cuisine Type</span>
+                </h2>
+                <p class="section-subtitle" id="cuisineTypeDesc">
+                    Choose your preferred cuisine style
+                </p>
+
+                <div class="cuisine-types-grid">
+                    <div class="cuisine-type-item">
+                        <input type="radio" 
+                               id="cuisine_arabic" 
+                               name="cuisine_type" 
+                               value="arabic"
+                               checked>
+                        <label for="cuisine_arabic" class="cuisine-type-label">
+                            <span class="cuisine-type-icon">🕌</span>
+                            <div class="cuisine-type-text">
+                                <span class="cuisine-type-name" data-en="Arabic Cuisine" data-ar="مطبخ عربي">Arabic Cuisine</span>
+                                <span class="cuisine-type-desc" data-en="Traditional UAE & Middle Eastern" data-ar="أطباق إماراتية تقليدية">Traditional UAE & Middle Eastern</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="cuisine-type-item">
+                        <input type="radio" 
+                               id="cuisine_international" 
+                               name="cuisine_type" 
+                               value="international">
+                        <label for="cuisine_international" class="cuisine-type-label">
+                            <span class="cuisine-type-icon">🌍</span>
+                            <div class="cuisine-type-text">
+                                <span class="cuisine-type-name" data-en="International" data-ar="عالمي">International</span>
+                                <span class="cuisine-type-desc" data-en="Healthy global cuisines" data-ar="مطابخ عالمية صحية">Healthy global cuisines</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meal Type Selection -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span>🍳</span>
+                    <span id="mealTypeTitle">Choose Meal Type</span>
+                </h2>
+                <p class="section-subtitle" id="mealTypeDesc">
+                    What type of meal do you want to prepare?
+                </p>
+
+                <div class="meal-types-grid">
+                    {% for meal_key, meal_data in meal_types.items() %}
+                    <div class="meal-type-item">
+                        <input type="radio" 
+                               id="meal_{{ meal_key }}" 
+                               name="meal_type" 
+                               value="{{ meal_key }}"
+                               required>
+                        <label for="meal_{{ meal_key }}" class="meal-type-label">
+                            <span class="meal-type-icon">{{ meal_data.icon }}</span>
+                            <span class="meal-type-name" data-en="{{ meal_data.en }}" data-ar="{{ meal_data.ar }}">
+                                {{ meal_data.ar if language == 'ar' else meal_data.en }}
+                            </span>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button type="submit" class="btn-generate" id="generateBtn">
+                <span id="generateText">🎨 Generate Healthy Meal</span>
+            </button>
+
+            <!-- View History Link -->
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{{ url_for('meals.meal_history', lang=language) }}" 
+                   style="color: #2e7d32; text-decoration: none; font-weight: 600;">
+                    <span id="historyLink">📖 View Meal History</span>
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="{{ url_for('meals.static', filename='js/meals.js') }}"></script>
+
+</body>
+</html>

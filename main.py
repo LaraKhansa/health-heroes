@@ -27,16 +27,16 @@ from db import init_db
 init_db(app)
 
 # Register blueprints
-from app.screen_free_activities.routes import screen_free_bp
 from app.auth.routes import auth_bp
 from app.profile.routes import profile_bp
+from app.meal_recommender.routes import meals_bp
+from app.screen_free_activities.routes import screen_free_bp
 from app.dashboard.routes import dashboard_bp
 
-
-
-app.register_blueprint(screen_free_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(meals_bp)
+app.register_blueprint(screen_free_bp)
 app.register_blueprint(dashboard_bp, url_prefix="/")
 
 # Home route
@@ -185,8 +185,7 @@ def home():
             
             <div class="links">
                 <a href="/activities?lang=en" id="activitiesLink">Screen-Free Activities</a>
-                <a href="#" class="coming-soon" id="mealsLink">Meal Recommender (Coming Soon)</a>
-                <a href="#" class="coming-soon" id="chatLink">AI Chat (Coming Soon)</a>
+                <a href="/meals" id="mealsLink">Meal Recommender</a>
                 <a href="/dashboard" id="dashboardLink">Progress Dashboard</a>
             </div>
         </div>
@@ -214,16 +213,14 @@ def home():
                     document.getElementById('mainTitle').textContent = 'أبطال الصحة';
                     document.getElementById('subtitle').textContent = 'تمكين العائلات لحياة أكثر صحة';
                     document.getElementById('activitiesLink').textContent = 'أنشطة بدون شاشات';
-                    document.getElementById('mealsLink').textContent = 'توصيات الوجبات (قريباً)';
-                    document.getElementById('chatLink').textContent = 'الدردشة الذكية (قريباً)';
-                    document.getElementById('dashboardLink').textContent = 'لوحة التقدم (قريباً)';
+                    document.getElementById('mealsLink').textContent = 'توصيات الوجبات';
+                    document.getElementById('dashboardLink').textContent = 'لوحة التقدم';
                     document.body.style.direction = 'rtl';
                 }} else {{
                     document.getElementById('mainTitle').textContent = 'Health Heroes';
                     document.getElementById('subtitle').textContent = 'Empowering Families for Healthier Lives';
                     document.getElementById('activitiesLink').textContent = 'Screen-Free Activities';
-                    document.getElementById('mealsLink').textContent = 'Meal Recommender (Coming Soon)';
-                    document.getElementById('chatLink').textContent = 'AI Chat (Coming Soon)';
+                    document.getElementById('mealsLink').textContent = 'Meal Recommender';
                     document.getElementById('dashboardLink').textContent = 'Progress Dashboard';
                     document.body.style.direction = 'ltr';
                 }}

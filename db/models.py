@@ -326,3 +326,138 @@ class ActivityCompletion(db.Model):
     
     def __repr__(self):
         return f'<ActivityCompletion user={self.user_id} activity={self.activity_id}>'
+
+class Meal(db.Model):
+    """
+    Generated meals for families
+    Stores meal recommendations with bilingual content
+    """
+    __tablename__ = 'meals'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    family_profile_id = db.Column(db.Integer, db.ForeignKey('family_profiles.id'), nullable=False)
+    
+    # Meal basic info (bilingual)
+    name_en = db.Column(db.String(200), nullable=False)
+    name_ar = db.Column(db.String(200), nullable=False)
+    meal_type = db.Column(db.String(50), nullable=False)  # breakfast, lunch, dinner, snack, dessert
+    
+    # Recipe details (stored as JSON for flexibility)
+    ingredients = db.Column(db.Text)  # JSON array of ALL ingredients needed
+    selected_ingredients = db.Column(db.Text)  # JSON array of ingredients user SELECTED (already has)
+    missing_ingredients = db.Column(db.Text)  # JSON array of ingredients user NEEDS TO BUY
+    
+    instructions_en = db.Column(db.Text)  # English instructions
+    instructions_ar = db.Column(db.Text)  # Arabic instructions
+    
+    # Timing and nutrition
+    prep_time = db.Column(db.String(50))  # e.g., "30 minutes"
+    cook_time = db.Column(db.String(50))  # e.g., "20 minutes"
+    nutritional_benefits_en = db.Column(db.Text)
+    nutritional_benefits_ar = db.Column(db.Text)
+    why_healthy_en = db.Column(db.Text)  # Why this meal is healthy for the child
+    why_healthy_ar = db.Column(db.Text)
+    
+    # User interaction
+    is_favorite = db.Column(db.Boolean, default=False)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Helper methods for JSON fields
+    def get_ingredients(self):
+        """Get all ingredients as a list"""
+        return json.loads(self.ingredients) if self.ingredients else []
+    
+    def set_ingredients(self, ingredients_list):
+        """Set all ingredients from a list"""
+        self.ingredients = json.dumps(ingredients_list, ensure_ascii=False)
+    
+    def get_selected_ingredients(self):
+        """Get ingredients user already has"""
+        return json.loads(self.selected_ingredients) if self.selected_ingredients else []
+    
+    def set_selected_ingredients(self, ingredients_list):
+        """Set ingredients user already has"""
+        self.selected_ingredients = json.dumps(ingredients_list, ensure_ascii=False)
+    
+    def get_missing_ingredients(self):
+        """Get ingredients user needs to buy"""
+        return json.loads(self.missing_ingredients) if self.missing_ingredients else []
+    
+    def set_missing_ingredients(self, ingredients_list):
+        """Set ingredients user needs to buy"""
+        self.missing_ingredients = json.dumps(ingredients_list, ensure_ascii=False)
+    
+    def calculate_missing_ingredients(self):
+        """
+        Calculate which ingredients are missing based on what's selected
+        This compares all ingredients vs selected ingredients
+        Returns only ingredients the user needs to buy
+        """
+        all_ingredients = self.get_ingredients()
+        selected = self.get_selected_ingredients()
+        
+        # Extract just the names from selected ingredients (what user HAS)
+        selected_names = set()
+        for ing in selected:
+            if isinstance(ing, dict):
+                name = ing.get('name_en', '').lower().strip()
+                if name:
+                    selected_names.add(name)
+            else:
+                name = str(ing).lower().strip()
+                if name:
+                    selected_names.add(name)
+        
+        print(f"DEBUG: User has these ingredients: {selected_names}")
+        
+        # Find missing ingredients (in recipe but NOT in what user selected)
+        missing = []
+        for ing in all_ingredients:
+            ing_name = ''
+            if isinstance(ing, dict):
+                ing_name = ing.get('name_en', '').lower().strip()
+            else:
+                ing_name = str(ing).lower().strip()
+            
+            # Check if this ingredient is NOT in what user has
+            if ing_name and ing_name not in selected_names:
+                missing.append(ing)
+                print(f"DEBUG: Missing ingredient: {ing_name}")
+        
+        return missing
+    
+    def to_dict(self, language='en'):
+        """
+        Convert meal to dictionary for API/frontend
+        
+        Args:
+            language: 'en' or 'ar' for language preference
+        
+        Returns:
+            dict with meal data
+        """
+        return {
+            'id': self.id,
+            'family_profile_id': self.family_profile_id,
+            'name': self.name_ar if language == 'ar' else self.name_en,
+            'name_en': self.name_en,
+            'name_ar': self.name_ar,
+            'meal_type': self.meal_type,
+            'ingredients': self.get_ingredients(),
+            'selected_ingredients': self.get_selected_ingredients(),
+            'missing_ingredients': self.get_missing_ingredients(),
+            'instructions': self.instructions_ar if language == 'ar' else self.instructions_en,
+            'instructions_en': self.instructions_en,
+            'instructions_ar': self.instructions_ar,
+            'prep_time': self.prep_time,
+            'cook_time': self.cook_time,
+            'nutritional_benefits': self.nutritional_benefits_ar if language == 'ar' else self.nutritional_benefits_en,
+            'why_healthy': self.why_healthy_ar if language == 'ar' else self.why_healthy_en,
+            'is_favorite': self.is_favorite,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+    
+    def __repr__(self):
+        return f'<Meal {self.name_en}>'

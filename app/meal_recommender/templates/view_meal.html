@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ meal.name_en }} - Health Heroes</title>
+    <!-- Base styles from activities -->
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <!-- Meal recommender specific styles -->
+    <link rel="stylesheet" href="{{ url_for('meals.static', filename='css/meals.css') }}">
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh;">
+
+    <!-- Loading Overlay for Regeneration -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-icon">🔄</div>
+            <h3 class="loading-title" id="loadingTitle">Modifying Your Recipe</h3>
+            <p class="loading-subtitle" id="loadingSubtitle">Making it even better...</p>
+            
+            <div class="cooking-animation">
+                <span class="cooking-icon">👨‍🍳</span>
+                <span class="cooking-icon">🥘</span>
+                <span class="cooking-icon">✨</span>
+            </div>
+            
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+            
+            <div class="loading-dots" style="margin-top: 20px;">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language detection script -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentLanguage = urlParams.get('lang') || localStorage.getItem('userLanguage') || 'en';
+        localStorage.setItem('userLanguage', currentLanguage);
+        
+        if (currentLanguage === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', 'ar');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', 'en');
+        }
+    </script>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="welcome-section">
+            <h1 class="welcome-text" id="welcomeText">Welcome, {{ user_name }}</h1>
+            <h2 class="app-title">Health Heroes ⭐</h2>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn" id="logoutBtn">Logout ⬆</a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="meal-display-container">
+        
+        <!-- Meal Card -->
+        <div class="meal-card">
+            
+            <!-- Meal Name -->
+            <h1 class="meal-name">
+                {{ meal.name_ar if language == 'ar' else meal.name_en }}
+            </h1>
+
+            <!-- Meal Meta Info -->
+            <div class="meal-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">⏱️</span>
+                    <span><strong id="prepTimeLabel">Prep:</strong> {{ meal.prep_time }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🍳</span>
+                    <span><strong id="cookTimeLabel">Cook:</strong> {{ meal.cook_time }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🍽️</span>
+                    <span id="mealTypeDisplay">{{ meal.meal_type.title() }}</span>
+                </div>
+            </div>
+
+            <!-- Shopping List (Missing Ingredients) -->
+            {% set missing = meal.get_missing_ingredients() %}
+            {% if missing and missing|length > 0 %}
+            <div class="shopping-list-section">
+                <h3 id="shoppingListTitle">🛒 Shopping List - Ingredients You Need</h3>
+                <p style="font-size: 14px; color: #856404; margin-bottom: 15px;" id="shoppingListDesc">
+                    Don't worry! Here's what you need to buy:
+                </p>
+                <ul class="shopping-list">
+                    {% for item in missing %}
+                    <li>
+                        {% if item is mapping %}
+                            {{ item.name_ar if language == 'ar' else item.name_en }}
+                            {% if item.amount %}
+                                ({{ item.amount }})
+                            {% endif %}
+                        {% else %}
+                            {{ item }}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Ingredients Section -->
+            <div class="ingredients-section">
+                <h3 id="ingredientsTitle">📝 Ingredients</h3>
+                <div class="ingredients-list">
+                    {% for ingredient in meal.get_ingredients() %}
+                    <div class="ingredient-display-item">
+                        <span class="ingredient-display-icon">{{ ingredient.icon if ingredient.icon else '🥘' }}</span>
+                        <div class="ingredient-display-text">
+                            <div class="ingredient-name">
+                                {{ ingredient.name_ar if language == 'ar' else ingredient.name_en }}
+                            </div>
+                            {% if ingredient.amount %}
+                            <div class="ingredient-amount">{{ ingredient.amount }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions-section">
+                <h3 id="instructionsTitle">👩‍🍳 Instructions</h3>
+                {% set instructions = meal.instructions_ar if language == 'ar' else meal.instructions_en %}
+                {% set steps = instructions.split('\n') if instructions else [] %}
+                <ol class="instructions-list">
+                    {% for step in steps %}
+                        {% if step.strip() %}
+                        <li>{{ step.strip() }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <!-- Nutritional Benefits Section -->
+            <div class="nutrition-section">
+                <h3 id="nutritionTitle">💪 Nutritional Benefits</h3>
+                <p>{{ meal.nutritional_benefits_ar if language == 'ar' else meal.nutritional_benefits_en }}</p>
+            </div>
+
+            <!-- Why Healthy Section -->
+            <div class="nutrition-section" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                <h3 id="whyHealthyTitle">🌟 Why This Meal is Healthy for Your Children</h3>
+                <p>{{ meal.why_healthy_ar if language == 'ar' else meal.why_healthy_en }}</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-favorite" onclick="toggleFavorite({{ meal.id }})">
+                    <span id="favoriteIcon">{{ '❤️' if meal.is_favorite else '🤍' }}</span>
+                    <span id="favoriteText">{{ 'Remove from Favorites' if meal.is_favorite else 'Save as Favorite' }}</span>
+                </button>
+                
+                <!-- Regenerate Button -->
+                <button class="btn-action btn-regenerate" onclick="showRegenerateDialog()">
+                    <span>🔄</span>
+                    <span id="regenerateText">Modify Recipe</span>
+                </button>
+                
+                <a href="{{ url_for('meals.meals_home', lang=language) }}" class="btn-action btn-generate-new">
+                    <span>🎨</span>
+                    <span id="generateNewText">Generate New Meal</span>
+                </a>
+                
+                <a href="{{ url_for('meals.meal_history', lang=language) }}" class="btn-action btn-back">
+                    <span>📖</span>
+                    <span id="viewHistoryText">View All Meals</span>
+                </a>
+            </div>
+            <!-- Regenerate Dialog (hidden by default) -->
+            <div id="regenerateDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                <div style="background: white; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%;">
+                    <h3 id="dialogTitle" style="margin-bottom: 15px; color: #2e7d32;">Modify This Recipe</h3>
+                    <p id="dialogDesc" style="margin-bottom: 20px; color: #666;">Tell us what you'd like to change:</p>
+                    <textarea id="feedbackInput" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; min-height: 100px; font-family: 'Nunito', sans-serif;" placeholder="e.g., Make it less spicy, Add more vegetables, Use less oil"></textarea>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="submitRegenerate()" style="flex: 1; background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                            <span id="submitBtn">Submit</span>
+                        </button>
+                        <button onclick="closeRegenerateDialog()" style="flex: 1; background: #e0e0e0; color: #424242; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                            <span id="cancelBtn">Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Translation object
+        const translations = {
+            en: {
+                welcomeText: 'Welcome',
+                logoutBtn: 'Logout ⬆',
+                prepTimeLabel: 'Prep:',
+                cookTimeLabel: 'Cook:',
+                shoppingListTitle: '🛒 Shopping List - Ingredients You Need',
+                shoppingListDesc: "Don't worry! Here's what you need to buy:",
+                ingredientsTitle: '📝 Ingredients',
+                instructionsTitle: '👩‍🍳 Instructions',
+                nutritionTitle: '💪 Nutritional Benefits',
+                whyHealthyTitle: '🌟 Why This Meal is Healthy for Your Children',
+                favoriteTextSave: 'Save as Favorite',
+                favoriteTextRemove: 'Remove from Favorites',
+                generateNewText: 'Generate New Meal',
+                viewHistoryText: 'View All Meals',
+                favoriteAdded: 'Added to favorites! ❤️',
+                favoriteRemoved: 'Removed from favorites',
+                errorFavorite: 'Failed to update favorite status',
+                regenerateText: 'Modify Recipe',
+                dialogTitle: 'Modify This Recipe',
+                dialogDesc: "Tell us what you'd like to change:",
+                submitBtn: 'Submit',
+                cancelBtn: 'Cancel',
+                feedbackPlaceholder: 'e.g., Make it less spicy, Add more vegetables, Use less oil',
+                feedbackRequired: 'Please enter your feedback',
+                regenerateSuccess: 'Recipe modified successfully! ✨',
+                regenerateFailed: 'Failed to modify',
+                regeneratingTitle: 'Modifying Your Recipe',
+                regeneratingSubtitle: 'Making it even better...',
+                feedbackRequired: 'Please enter your feedback'
+                
+            },
+            ar: {
+                welcomeText: 'مرحباً',
+                logoutBtn: 'تسجيل الخروج ⬆',
+                prepTimeLabel: 'التحضير:',
+                cookTimeLabel: 'الطبخ:',
+                shoppingListTitle: '🛒 قائمة التسوق - المكونات المطلوبة',
+                shoppingListDesc: 'لا تقلق! إليك ما تحتاج لشرائه:',
+                ingredientsTitle: '📝 المكونات',
+                instructionsTitle: '👩‍🍳 طريقة التحضير',
+                nutritionTitle: '💪 الفوائد الغذائية',
+                whyHealthyTitle: '🌟 لماذا هذه الوجبة صحية لأطفالك',
+                favoriteTextSave: 'حفظ كمفضلة',
+                favoriteTextRemove: 'إزالة من المفضلة',
+                generateNewText: 'إنشاء وجبة جديدة',
+                viewHistoryText: 'عرض جميع الوجبات',
+                favoriteAdded: 'تمت الإضافة للمفضلة! ❤️',
+                favoriteRemoved: 'تمت الإزالة من المفضلة',
+                errorFavorite: 'فشل تحديث حالة المفضلة',
+                regenerateText: 'تعديل الوصفة',
+                dialogTitle: 'تعديل هذه الوصفة',
+                dialogDesc: 'أخبرنا بما تريد تغييره:',
+                submitBtn: 'إرسال',
+                cancelBtn: 'إلغاء',
+                feedbackPlaceholder: 'مثال: اجعلها أقل حرارة، أضف المزيد من الخضروات، استخدم زيت أقل',
+                feedbackRequired: 'الرجاء إدخال ملاحظاتك',
+                regenerateSuccess: 'تم تعديل الوصفة بنجاح! ✨',
+                regenerateFailed: 'فشل التعديل',
+                regeneratingTitle: 'جاري تعديل الوصفة',
+                regeneratingSubtitle: 'نجعلها أفضل...',
+                feedbackRequired: 'الرجاء إدخال ملاحظاتك'
+            }
+        };
+
+        // Update page text
+        function updatePageText() {
+            const t = translations[currentLanguage];
+            
+            // Header
+            const userName = document.getElementById('welcomeText').textContent.split(', ')[1] || 'User';
+            document.getElementById('welcomeText').textContent = `${t.welcomeText}, ${userName}`;
+            document.getElementById('logoutBtn').textContent = t.logoutBtn;
+            
+            // Labels
+            document.getElementById('prepTimeLabel').textContent = t.prepTimeLabel;
+            document.getElementById('cookTimeLabel').textContent = t.cookTimeLabel;
+            
+            // Sections
+            const shoppingTitle = document.getElementById('shoppingListTitle');
+            if (shoppingTitle) shoppingTitle.textContent = t.shoppingListTitle;
+            
+            const shoppingDesc = document.getElementById('shoppingListDesc');
+            if (shoppingDesc) shoppingDesc.textContent = t.shoppingListDesc;
+            
+            document.getElementById('ingredientsTitle').textContent = t.ingredientsTitle;
+            document.getElementById('instructionsTitle').textContent = t.instructionsTitle;
+            document.getElementById('nutritionTitle').textContent = t.nutritionTitle;
+            document.getElementById('whyHealthyTitle').textContent = t.whyHealthyTitle;
+            
+            // Buttons
+            const isFavorite = document.getElementById('favoriteIcon').textContent === '❤️';
+            document.getElementById('favoriteText').textContent = isFavorite ? t.favoriteTextRemove : t.favoriteTextSave;
+            document.getElementById('generateNewText').textContent = t.generateNewText;
+            document.getElementById('viewHistoryText').textContent = t.viewHistoryText;
+        }
+
+        // Toggle favorite
+        function toggleFavorite(mealId) {
+            fetch(`/meals/favorite/${mealId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const t = translations[currentLanguage];
+                    const icon = document.getElementById('favoriteIcon');
+                    const text = document.getElementById('favoriteText');
+                    
+                    if (data.is_favorite) {
+                        icon.textContent = '❤️';
+                        text.textContent = t.favoriteTextRemove;
+                        alert(t.favoriteAdded);
+                    } else {
+                        icon.textContent = '🤍';
+                        text.textContent = t.favoriteTextSave;
+                        alert(t.favoriteRemoved);
+                    }
+                } else {
+                    alert(translations[currentLanguage].errorFavorite);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(translations[currentLanguage].errorFavorite);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePageText();
+        });
+
+        console.log('✅ View Meal page loaded successfully!');
+
+        // Show regenerate dialog
+        function showRegenerateDialog() {
+            document.getElementById('regenerateDialog').style.display = 'flex';
+        }
+
+        // Close regenerate dialog
+        function closeRegenerateDialog() {
+            document.getElementById('regenerateDialog').style.display = 'none';
+            document.getElementById('feedbackInput').value = '';
+        }
+
+        // Submit regeneration
+        function submitRegenerate() {
+            const feedback = document.getElementById('feedbackInput').value.trim();
+            
+            if (!feedback) {
+                alert(translations[currentLanguage].feedbackRequired);
+                return;
+            }
+            
+            // Close dialog
+            closeRegenerateDialog();
+            
+            // Show loading overlay
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
+            
+            // Update loading text
+            const t = translations[currentLanguage];
+            document.getElementById('loadingTitle').textContent = t.regeneratingTitle || 'Modifying Your Recipe';
+            document.getElementById('loadingSubtitle').textContent = t.regeneratingSubtitle || 'Making it even better...';
+            
+            fetch('/meals/regenerate/{{ meal.id }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    feedback: feedback,
+                    language: currentLanguage
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading
+                overlay.classList.remove('active');
+                
+                if (data.success) {
+                    alert(t.regenerateSuccess || 'Recipe modified successfully! ✨');
+                    location.reload();
+                } else {
+                    alert(data.error || t.regenerateFailed);
+                }
+            })
+            .catch(error => {
+                // Hide loading
+                overlay.classList.remove('active');
+                console.error('Error:', error);
+                alert(translations[currentLanguage].regenerateFailed || 'An error occurred');
+            });
+        }
+
+        // Add helper functions
+        function showLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
