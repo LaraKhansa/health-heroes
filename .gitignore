@@ -11,7 +11,9 @@ venv/
 # Streamlit
 .streamlit/
 
-# Data files (you might want to exclude user data)
+# Data files 
+health_heroes.db
+*.db
 data/*.json
 
 # IDE

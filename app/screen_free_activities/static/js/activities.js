@@ -112,20 +112,33 @@ function updatePageText() {
         activityTypeDropdown.options[6].text = t('scienceExperiments');
     }
     
-    // Filter dropdowns - Child Selection
+    // Child selection - only translate the "All Children" option
     const childSelectionDropdown = document.getElementById('child-selection');
-    if (childSelectionDropdown) {
+    if (childSelectionDropdown && childSelectionDropdown.options[0]) {
         childSelectionDropdown.options[0].text = t('allChildren');
-        // Keep children names as is (Sarah, Ahmed, Layla)
+        
     }
     
     // Perfect for Your Home section
     const sectionTitles = document.querySelectorAll('.section-title');
     if (sectionTitles[0]) sectionTitles[0].textContent = t('perfectForHome');
 
-    const resourceItems = document.querySelectorAll('.resource-item span:not(.check-icon)');
-    if (resourceItems[0]) resourceItems[0].textContent = t('balconySpace');
-    if (resourceItems[1]) resourceItems[1].textContent = t('kitchenAccess');
+    // Translate resource items based on data attribute
+    const resourceItems = document.querySelectorAll('.resource-item span[data-resource]');
+    resourceItems.forEach(item => {
+        const resource = item.getAttribute('data-resource');
+        if (resource === 'kitchen') {
+            item.textContent = currentLanguage === 'ar' ? 'المطبخ' : 'Kitchen Access';
+        } else if (resource === 'balcony') {
+            item.textContent = currentLanguage === 'ar' ? 'الشرفة' : 'Balcony Space';
+        } else if (resource === 'garden') {
+            item.textContent = currentLanguage === 'ar' ? 'الحديقة' : 'Garden/Backyard';
+        } else if (resource === 'living_room') {
+            item.textContent = currentLanguage === 'ar' ? 'غرفة المعيشة' : 'Living Room';
+        } else if (resource === 'outdoor_nearby') {
+            item.textContent = currentLanguage === 'ar' ? 'حديقة قريبة' : 'Nearby Park';
+        }
+    });
     
     // Get New Ideas button
     const newIdeasBtn = document.querySelector('.new-ideas-btn');
@@ -227,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupFilterListeners();
     setupModalListeners();
     setupNewIdeasButton();
+    loadUserStats();    
 });
 
 // Setup filter listeners
@@ -414,10 +428,42 @@ function setupModalListeners() {
             currentStep++;
             updateModalContent();
         } else {
-            alert('🎉 Congratulations! Activity completed!');
-            closeModal();
+            // Activity completed - save to database
+            saveActivityCompletion(currentActivityId);
         }
     });
+
+    // Function to save activity completion
+    function saveActivityCompletion(activityId) {
+        fetch('/activities/api/complete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                activity_id: activityId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                const message = currentLanguage === 'ar' 
+                    ? '🎉 أحسنت! تم إكمال النشاط!'
+                    : '🎉 Congratulations! Activity completed!';
+                alert(message);
+                
+                // Reload page to update completion count
+                window.location.reload();
+            } else {
+                alert('Failed to save completion');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            closeModal();
+        });
+    }
     
     // Pause & Celebrate
     pauseBtn.addEventListener('click', function() {
@@ -492,3 +538,37 @@ function updateModalContent() {
         completeBtn.textContent = t('markComplete');
     }
 }
+
+// Load user stats on page load
+function loadUserStats() {
+    fetch('/activities/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            const completedCount = data.completed_count || 0;
+            const badge = data.badge;
+            
+            // Update count display
+            const countElement = document.getElementById('completedCount');
+            if (countElement) {
+                const text = currentLanguage === 'ar' 
+                    ? `${completedCount} نشاط مكتمل`
+                    : `${completedCount} activities completed`;
+                countElement.textContent = text;
+            }
+            
+            // Show badge if earned
+            if (badge) {
+                const badgeElement = document.getElementById('userBadge');
+                if (badgeElement) {
+                    badgeElement.textContent = badge.icon;
+                    badgeElement.style.display = 'inline';
+                    badgeElement.title = badge.name;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading stats:', error);
+        });
+}
+
+console.log('✅ Activities loaded successfully!');

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
-from db.models import db, Activity
+from db.models import db, Activity, User, FamilyProfile, Child, ActivityCompletion
 from sqlalchemy import func
 import random
 
@@ -25,16 +25,23 @@ def activities_list():
     if not user_id:
         return redirect(url_for('auth.login'))
     
+    # Get user and family profile
+    user = User.query.get(user_id)
+    family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
+    
+    # Get all children
+    children = Child.query.filter_by(family_profile_id=family_profile.id).all() if family_profile else []
+    
+    # Get home resources from profile
+    home_resources = family_profile.get_home_resources() if family_profile else []
+    
     # Get user name for display
     user_name = session.get('user_name', 'User')
     
-    # For now, hardcode home resources (later from family profile)
-    home_resources = ["balcony", "kitchen"]
-    
-    # Get filters from query params (for dynamic filtering)
+    # Get filters from query params
     category_filter = request.args.get('category', 'all')
     child_filter = request.args.get('child', 'all')
-    language = request.args.get('lang', 'en')  # Language preference
+    language = request.args.get('lang', family_profile.language if family_profile else 'en')
     
     # Base query - get all activities
     query = Activity.query
@@ -43,25 +50,81 @@ def activities_list():
     if category_filter != 'all':
         query = query.filter_by(category=category_filter)
     
-    # Filter by home resources (show activities that match user's home)
-    # For now, show all activities (we'll add smart filtering later)
+    # Filter by child's age if specified
+    selected_child = None
+    if child_filter != 'all':
+        try:
+            child_id = int(child_filter)
+            selected_child = Child.query.get(child_id)
+            if selected_child:
+                age_range = selected_child.get_age_range()
+                query = query.filter_by(age_range=age_range)
+        except (ValueError, TypeError):
+            pass
     
-    # Get random 6 activities for display
+    # Get all matching activities
     all_activities = query.all()
     
-    if len(all_activities) > 6:
-        activities = random.sample(all_activities, 6)
+    # Smart sorting: prioritize activities matching home resources and interests
+    if all_activities:
+        scored_activities = []
+        child_interests = selected_child.get_interests() if selected_child else []
+        
+        for activity in all_activities:
+            score = 0
+            
+            # Boost score if matches child's interests
+            if child_interests:
+                # Map category to interests
+                category_interest_map = {
+                    'games': 'sports',
+                    'cooking': 'cooking',
+                    'creative': 'arts',
+                    'nature': 'outdoor',
+                    'reading': 'reading',
+                    'science': 'science'
+                }
+                if activity.category in category_interest_map:
+                    if category_interest_map[activity.category] in child_interests:
+                        score += 10
+            
+            # Boost score if matches home resources
+            activity_requirements = activity.get_home_requirements()
+            if activity_requirements:
+                for req in activity_requirements:
+                    if req in home_resources:
+                        score += 5
+            
+            scored_activities.append((activity, score))
+        
+        # Sort by score (highest first)
+        scored_activities.sort(key=lambda x: x[1], reverse=True)
+        
+        # Select top activities (max 6)
+        if len(scored_activities) > 6:
+            # Take some high-scored and some random for variety
+            top_activities = [act for act, score in scored_activities[:4]]
+            remaining = [act for act, score in scored_activities[4:]]
+            if len(remaining) >= 2:
+                top_activities.extend(random.sample(remaining, 2))
+            else:
+                top_activities.extend(remaining)
+            activities = top_activities
+        else:
+            activities = [act for act, score in scored_activities]
     else:
-        activities = all_activities
+        activities = []
     
     return render_template(
         'activities_list.html',
         activities=activities,
         home_resources=home_resources,
+        children=children,
         language=language,
         category_filter=category_filter,
         child_filter=child_filter,
-        user_name=user_name
+        user_name=user_name,
+        total_activities=len(all_activities)
     )
 
 
@@ -72,6 +135,7 @@ def api_get_activities():
     Returns different random activities each time
     """
     category_filter = request.args.get('category', 'all')
+    child_filter = request.args.get('child', 'all')
     language = request.args.get('lang', 'en')
     limit = int(request.args.get('limit', 6))
     
@@ -81,12 +145,24 @@ def api_get_activities():
     # Filter by category
     if category_filter != 'all':
         query = query.filter_by(category=category_filter)
-        # Get ALL matching activities first
-        all_activities = query.all()
-    else:
-        # When "All Activities" is selected, get diverse selection from all categories
-        all_activities = Activity.query.all()
-        
+    
+    # Filter by child's age if specified
+    if child_filter != 'all':
+        try:
+            child_id = int(child_filter)
+            selected_child = Child.query.get(child_id)
+            if selected_child:
+                age_range = selected_child.get_age_range()
+                print(f"DEBUG API: Child {selected_child.name}, Age: {selected_child.get_age()}, Age Range: {age_range}")
+                query = query.filter_by(age_range=age_range)
+        except (ValueError, TypeError):
+            pass  # Invalid child_filter, ignore
+    
+    # Get ALL matching activities first
+    all_activities = query.all()
+    
+    # If "All Activities" is selected and no child filter, get diverse selection
+    if category_filter == 'all' and child_filter == 'all':
         # Group activities by category
         from collections import defaultdict
         activities_by_category = defaultdict(list)
@@ -129,6 +205,69 @@ def api_get_activities():
     
     return jsonify(activities_data)
 
+@screen_free_bp.route('/api/complete', methods=['POST'])
+def api_complete_activity():
+    """
+    Mark an activity as completed
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'success': False, 'error': 'Not logged in'})
+    
+    data = request.get_json()
+    activity_id = data.get('activity_id')
+    
+    if not activity_id:
+        return jsonify({'success': False, 'error': 'Missing activity_id'})
+    
+    # Check if already completed
+    existing = ActivityCompletion.query.filter_by(
+        user_id=user_id,
+        activity_id=activity_id
+    ).first()
+    
+    if existing:
+        return jsonify({'success': True, 'message': 'Already completed'})
+    
+    # Create new completion
+    completion = ActivityCompletion(
+        user_id=user_id,
+        activity_id=activity_id
+    )
+    
+    db.session.add(completion)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Activity completed!'})
+
+
+@screen_free_bp.route('/api/stats')
+def api_get_stats():
+    """
+    Get user activity statistics
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'completed_count': 0, 'badge': None})
+    
+    # Count completed activities
+    completed_count = ActivityCompletion.query.filter_by(user_id=user_id).count()
+    
+    # Determine badge
+    badge = None
+    if completed_count >= 50:
+        badge = {'name': 'Champion', 'icon': '🏆', 'color': 'gold'}
+    elif completed_count >= 25:
+        badge = {'name': 'Expert', 'icon': '⭐', 'color': 'purple'}
+    elif completed_count >= 10:
+        badge = {'name': 'Explorer', 'icon': '🌟', 'color': 'blue'}
+    elif completed_count >= 5:
+        badge = {'name': 'Beginner', 'icon': '✨', 'color': 'green'}
+    
+    return jsonify({
+        'completed_count': completed_count,
+        'badge': badge
+    })
 
 @screen_free_bp.route('/api/activity/<int:activity_id>')
 def api_get_activity(activity_id):
