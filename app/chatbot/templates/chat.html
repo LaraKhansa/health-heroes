@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="{{ 'ar' if language == 'ar' else 'en' }}" dir="{{ 'rtl' if language == 'ar' else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'مساعد الذكاء الاصطناعي' if language == 'ar' else 'AI Assistant' }} - Health Heroes</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('chatbot.static', filename='chat.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="{{ url_for('dashboard.dashboard') }}" class="back-btn">
+                    <span class="back-icon">{{ '←' if language == 'ar' else '→' }}</span>
+                </a>
+                <h1 class="header-title">
+                    {{ '🤖 مساعد الأسرة الذكي' if language == 'ar' else '🤖 Family AI Assistant' }}
+                </h1>
+            </div>
+            
+            <div class="header-right">
+                <!-- Language Toggle -->
+                <div class="language-toggle">
+                    <a href="?lang=en" class="lang-btn {{ 'active' if language == 'en' else '' }}">EN</a>
+                    <a href="?lang=ar" class="lang-btn {{ 'active' if language == 'ar' else '' }}">ع</a>
+                </div>
+                
+                <!-- User Name -->
+                <div class="user-info">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name">{{ user_name }}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="chat-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">
+                    {{ 'محادثاتي' if language == 'ar' else 'My Conversations' }}
+                </h2>
+                <button class="new-chat-btn" id="newChatBtn">
+                    {{ '+ جديد' if language == 'ar' else '+ New' }}
+                </button>
+            </div>
+            
+            <div class="conversations-list" id="conversationsList">
+                <!-- Conversations will be loaded here by JavaScript -->
+                <div class="loading-message">
+                    {{ 'جاري التحميل...' if language == 'ar' else 'Loading...' }}
+                </div>
+            </div>
+            
+            <!-- Mobile toggle button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span>☰</span>
+            </button>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <!-- Welcome Screen (shown when no conversation selected) -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-content">
+                    <h2 class="welcome-title">
+                        {{ 'مرحباً ' + user_name + '! 👋' if language == 'ar' else 'Welcome ' + user_name + '! 👋' }}
+                    </h2>
+                    <p class="welcome-text">
+                        {% if language == 'ar' %}
+                            أنا مساعدك الذكي المتخصص في صحة الأطفال والأسرة. يمكنني مساعدتك في:
+                        {% else %}
+                            I'm your AI assistant specialized in child and family health. I can help you with:
+                        {% endif %}
+                    </p>
+                    
+                    <div class="topics-grid">
+                        <div class="topic-card">
+                            <span class="topic-icon">🥗</span>
+                            <span class="topic-text">{{ 'التغذية الصحية' if language == 'ar' else 'Healthy Nutrition' }}</span>
+                        </div>
+                        <div class="topic-card">
+                            <span class="topic-icon">🏃</span>
+                            <span class="topic-text">{{ 'النشاط البدني' if language == 'ar' else 'Physical Activities' }}</span>
+                        </div>
+                        <div class="topic-card">
+                            <span class="topic-icon">😴</span>
+                            <span class="topic-text">{{ 'النوم والروتين' if language == 'ar' else 'Sleep & Routines' }}</span>
+                        </div>
+                        <div class="topic-card">
+                            <span class="topic-icon">📱</span>
+                            <span class="topic-text">{{ 'تقليل الشاشات' if language == 'ar' else 'Screen Time' }}</span>
+                        </div>
+                        <div class="topic-card">
+                            <span class="topic-icon">👶</span>
+                            <span class="topic-text">{{ 'التطور والسلوك' if language == 'ar' else 'Development' }}</span>
+                        </div>
+                        <div class="topic-card">
+                            <span class="topic-icon">🕌</span>
+                            <span class="topic-text">{{ 'الثقافة المحلية' if language == 'ar' else 'UAE Culture' }}</span>
+                        </div>
+                    </div>
+                    
+                    <button class="start-chat-btn" id="startChatBtn">
+                        {{ 'ابدأ محادثة جديدة' if language == 'ar' else 'Start New Chat' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Area -->
+            <div class="chat-messages" id="chatMessages" style="display: none;">
+                <!-- Messages will appear here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-container" id="chatInputContainer" style="display: none;">
+                <form class="chat-form" id="chatForm">
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="{{ 'اكتب رسالتك هنا...' if language == 'ar' else 'Type your message here...' }}"
+                        rows="1"
+                    ></textarea>
+                    <button type="submit" class="send-btn" id="sendBtn">
+                        <span class="send-icon">{{ '←' if language == 'ar' else '→' }}</span>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Pass data from Flask to JavaScript
+        const LANGUAGE = "{{ language }}";
+        const USER_ID = {{ session.user_id }};
+    </script>
+
+    <!-- Add Marked.js library for markdown support -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ url_for('chatbot.static', filename='chat.js') }}"></script>
+</body>
+</html>

@@ -31,12 +31,14 @@ from app.auth.routes import auth_bp
 from app.profile.routes import profile_bp
 from app.meal_recommender.routes import meals_bp
 from app.screen_free_activities.routes import screen_free_bp
+from app.chatbot.routes import chatbot_bp
 from app.dashboard.routes import dashboard_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(meals_bp)
 app.register_blueprint(screen_free_bp)
+app.register_blueprint(chatbot_bp)
 app.register_blueprint(dashboard_bp, url_prefix="/")
 
 # Home route

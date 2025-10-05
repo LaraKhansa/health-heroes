@@ -461,3 +461,68 @@ class Meal(db.Model):
     
     def __repr__(self):
         return f'<Meal {self.name_en}>'
+
+class ChatConversation(db.Model):
+    """
+    Chat conversations - groups messages into sessions
+    """
+    __tablename__ = 'chat_conversations'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    # Conversation details
+    title = db.Column(db.String(200))  # Auto-generated or user-edited
+    language = db.Column(db.String(10), default='en')  # 'en' or 'ar'
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    messages = db.relationship('ChatMessage', backref='conversation', cascade='all, delete-orphan', order_by='ChatMessage.created_at')
+    
+    def to_dict(self):
+        """Convert conversation to dictionary"""
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'language': self.language,
+            'message_count': len(self.messages),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+    
+    def __repr__(self):
+        return f'<ChatConversation {self.id}: {self.title}>'
+
+
+class ChatMessage(db.Model):
+    """
+    Individual messages in chat conversations
+    """
+    __tablename__ = 'chat_messages'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('chat_conversations.id'), nullable=False)
+    
+    # Message details
+    role = db.Column(db.String(20), nullable=False)  # 'user' or 'assistant'
+    message_text = db.Column(db.Text, nullable=False)
+    
+    # Timestamp
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def to_dict(self):
+        """Convert message to dictionary"""
+        return {
+            'id': self.id,
+            'conversation_id': self.conversation_id,
+            'role': self.role,
+            'message_text': self.message_text,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+    
+    def __repr__(self):
+        return f'<ChatMessage {self.id}: {self.role}>'
