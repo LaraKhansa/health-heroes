@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ 'ar' if language == 'ar' else 'en' }}" {% if language == 'ar' %}dir="rtl"{% endif %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Family Progress Dashboard - Health Heroes</title>
+  <title>{% if language == 'ar' %}لوحة تقدم العائلة - أبطال الصحة{% else %}Family Progress Dashboard - Health Heroes{% endif %}</title>
 
-  <!-- Shared styles -->
   <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body {
-      background: rgb(201, 232, 195) url("{{ url_for('screen_free.static', filename='images/bg-stars.png') }}") repeat; /* same star background */
+      background: rgb(201, 232, 195) url("{{ url_for('screen_free.static', filename='images/bg-stars.png') }}") repeat;
       background-size: contain;
       min-height: 100vh;
       font-family: 'Nunito', sans-serif;
       margin: 0;
     }
 
-    /* Header layout */
     .header {
       display: flex;
       justify-content: space-between;
@@ -50,23 +48,26 @@
       font-weight: bold;
       margin-top: 10px;
       font-size: 1rem;
-      transition: color 0.2s;
     }
 
     .logout-btn:hover {
       color: #1b5e20;
     }
 
-    /* Page title (above dashboard) */
+    .lang-toggle {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
     .page-title {
       text-align: center;
       color: #2e7d32;
       font-size: 2rem;
       font-weight: 800;
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
-    /* Dashboard container */
     .dashboard-container {
       max-width: 1100px;
       margin: 40px auto 60px auto;
@@ -92,15 +93,8 @@
       font-weight: 700;
       color: #2e7d32;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
-    }
-
-    /* Match app soft pastel gradients */
     .green { background: linear-gradient(135deg, #b9e6c9, #d9f2dc); }
     .orange { background: linear-gradient(135deg, #fce3b1, #fde7c9); }
     .blue { background: linear-gradient(135deg, #c8e6fa, #d9ecff); }
@@ -113,16 +107,6 @@
       border-radius: 12px;
       text-align: center;
       font-weight: 600;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .chart-section {
-      margin-top: 40px;
-    }
-
-    .toggle {
-      text-align: center;
-      margin-bottom: 20px;
     }
 
     button {
@@ -134,65 +118,83 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
     }
 
-    button.active {
-      background: #2e7d32;
-    }
-
-    small {
-      font-weight: normal;
-      font-size: 0.85rem;
-      color: #555;
-    }
+    button.active { background: #2e7d32; }
   </style>
 </head>
-<body>
 
-  <!-- Header Section -->
+<body>
   <header class="header">
     <div class="welcome-section">
-      <h1 class="welcome-text">Welcome, {{ user_name }}</h1>
-      <h2 class="app-title">Health Heroes ⭐</h2>
+      <h1 class="welcome-text">
+        {% if language == 'ar' %}مرحباً، {{ user_name }}{% else %}Welcome, {{ user_name }}{% endif %}
+      </h1>
+      <h2 class="app-title">{% if language == 'ar' %}أبطال الصحة ⭐{% else %}Health Heroes ⭐{% endif %}</h2>
     </div>
-    <a href="{{ url_for('auth.logout') }}" class="logout-btn" id="logoutBtn">Logout ⬆</a>
+    <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+      {% if language == 'ar' %}تسجيل الخروج ⬆{% else %}Logout ⬆{% endif %}
+    </a>
   </header>
 
-  <!-- Page Title -->
-  <h2 class="page-title">👨‍👩‍👧 Family Progress Dashboard</h2>
+  <div class="lang-toggle">
+    <a href="{{ url_for('dashboard.dashboard', lang='en') }}" style="color:#2e7d32;">English</a> |
+    <a href="{{ url_for('dashboard.dashboard', lang='ar') }}" style="color:#2e7d32;">العربية</a>
+  </div>
 
-  <!-- Dashboard Main Section -->
+  <h2 class="page-title">
+    {% if language == 'ar' %}👨‍👩‍👧 لوحة تقدم العائلة{% else %}👨‍👩‍👧 Family Progress Dashboard{% endif %}
+  </h2>
+
   <div class="dashboard-container">
-
     <div class="cards">
       <div class="card green">
-        🎮 Screen-Free Activities<br>
-        {{ screen_free_activities }}
+        {% if language == 'ar' %}
+          🎮 أنشطة بدون شاشات<br>{{ screen_free_activities }}
+        {% else %}
+          🎮 Screen-Free Activities<br>{{ screen_free_activities }}
+        {% endif %}
       </div>
 
       <div class="card orange">
-        🥗 Healthy Meals<br>
-        {{ healthy_meals }}<br>
-        <small>Goal: 5 per week</small>
+        {% if language == 'ar' %}
+          🥗 وجبات صحية<br>{{ healthy_meals }}<br><small>الهدف: 5 أسبوعياً</small>
+        {% else %}
+          🥗 Healthy Meals<br>{{ healthy_meals }}<br><small>Goal: 5 per week</small>
+        {% endif %}
       </div>
 
       <div class="card blue">
-        🏅 Family Streak Days<br>
-        {{ streak_days }}
+        {% if language == 'ar' %}
+          🏅 أيام متتالية نشطة<br>{{ streak_days }}
+        {% else %}
+          🏅 Family Streak Days<br>{{ streak_days }}
+        {% endif %}
       </div>
     </div>
 
     <div class="purple">
-      💡 Motivational Tip:<br>
-      <small><i>{{ motivational_tip or "Keep up the great work! Try 1 more veggie meal next week 🌱" }}</i></small>
+      💡 {% if language == 'ar' %}نصيحة تحفيزية:{% else %}Motivational Tip:{% endif %}<br>
+      <small><i>
+        {% if language == 'ar' %}
+          واصلوا التقدم الرائع! جربوا وجبة نباتية إضافية هذا الأسبوع 🌱
+        {% else %}
+          {{ motivational_tip or "Keep up the great work! Try 1 more veggie meal next week 🌱" }}
+        {% endif %}
+      </i></small>
     </div>
 
     <div class="chart-section">
-      <h3 style="text-align:center; color:#2e7d32;">📊 Screen-Free Hours</h3>
-      <div class="toggle">
-        <button id="weeklyBtn" class="active">Weekly</button>
-        <button id="monthlyBtn">Monthly</button>
+      <h3 style="text-align:center; color:#2e7d32;">
+        {% if language == 'ar' %}📊 ساعات بدون شاشات{% else %}📊 Screen-Free Hours{% endif %}
+      </h3>
+      <div class="toggle" style="text-align:center;">
+        <button id="weeklyBtn" class="active">
+          {% if language == 'ar' %}أسبوعي{% else %}Weekly{% endif %}
+        </button>
+        <button id="monthlyBtn">
+          {% if language == 'ar' %}شهري{% else %}Monthly{% endif %}
+        </button>
       </div>
       <canvas id="screenTimeChart" height="120"></canvas>
     </div>
@@ -201,14 +203,14 @@
   <script>
     const weeklyData = {{ weekly_data|tojson }};
     const monthlyData = {{ monthly_data|tojson }};
-
     const ctx = document.getElementById('screenTimeChart');
+
     let screenChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: Object.keys(weeklyData),
         datasets: [{
-          label: 'Screen-Free Hours',
+          label: '{{ "ساعات بدون شاشات" if language == "ar" else "Screen-Free Hours" }}',
           data: Object.values(weeklyData),
           backgroundColor: 'rgba(102, 187, 106, 0.6)',
           borderColor: '#4CAF50',
@@ -218,38 +220,13 @@
       },
       options: {
         responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1,
-              precision: 0,
-              callback: function(value) {
-                return Number.isInteger(value) ? value : '';
-              }
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            labels: { color: '#2e7d32', font: { weight: 'bold' } }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeOutQuart'
-        }
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { display: false } }
       }
     });
 
-    document.getElementById('weeklyBtn').addEventListener('click', () => {
-      updateChart(weeklyData, 'Weekly');
-    });
-
-    document.getElementById('monthlyBtn').addEventListener('click', () => {
-      updateChart(monthlyData, 'Monthly');
-    });
+    document.getElementById('weeklyBtn').addEventListener('click', () => updateChart(weeklyData, 'Weekly'));
+    document.getElementById('monthlyBtn').addEventListener('click', () => updateChart(monthlyData, 'Monthly'));
 
     function updateChart(data, type) {
       screenChart.data.labels = Object.keys(data);
