@@ -7,10 +7,7 @@ dashboard_bp = Blueprint("dashboard", __name__, template_folder="templates")
 @dashboard_bp.route("/dashboard")
 def dashboard():
     # --- Language handling ---
-    lang = request.args.get('lang')
-    if lang:
-        session['language'] = lang  # store chosen language
-    language = session.get('language', 'en')  # fallback to English if not set
+    language = session.get('language', 'en')  # use whatever is stored from main app
 
     # --- Screen-Free Activities Completed ---
     result = db.session.execute(text("SELECT COUNT(*) FROM activity_completions"))
