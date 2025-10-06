@@ -54,12 +54,6 @@
       color: #1b5e20;
     }
 
-    .lang-toggle {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
     .page-title {
       text-align: center;
       color: #2e7d32;
@@ -136,11 +130,6 @@
       {% if language == 'ar' %}تسجيل الخروج ⬆{% else %}Logout ⬆{% endif %}
     </a>
   </header>
-
-  <div class="lang-toggle">
-    <a href="{{ url_for('dashboard.dashboard', lang='en') }}" style="color:#2e7d32;">English</a> |
-    <a href="{{ url_for('dashboard.dashboard', lang='ar') }}" style="color:#2e7d32;">العربية</a>
-  </div>
 
   <h2 class="page-title">
     {% if language == 'ar' %}👨‍👩‍👧 لوحة تقدم العائلة{% else %}👨‍👩‍👧 Family Progress Dashboard{% endif %}
