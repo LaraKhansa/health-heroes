@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screen-Free Activities - Health Heroes</title>
+    <title>Screen-Free Activities -  Afiyah</title>
     <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
 </head>
 <body>
     <body>
@@ -28,19 +30,8 @@
     </script>
     
     <!-- Header -->
-    <header class="header">
-        <div class="welcome-section">
-            <h1 class="welcome-text">Welcome, {{ user_name }}</h1>
-            <h2 class="app-title">Health Heroes ⭐</h2>
-            <div id="userStats" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
-                <span id="completedCount" style="background: #66bb6a; color: white; padding: 5px 15px; border-radius: 15px; font-size: 14px; font-weight: 600;">
-                    0 activities completed
-                </span>
-                <span id="userBadge" style="font-size: 24px; display: none;"></span>
-            </div>
-        </div>
-        <a href="{{ url_for('auth.logout') }}" class="logout-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Logout ⬆</a>
-    </header>
+    {% include 'header.html' %}
+    {% include 'navigation.html' %}
 
     <!-- Main Content -->
     <main class="content">

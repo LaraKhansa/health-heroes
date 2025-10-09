@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Recommender - Health Heroes</title>
+    <title>Meal Recommender -  Afiyah</title>
     <!-- Base styles from activities -->
     <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
     <!-- Meal recommender specific styles -->
     <link rel="stylesheet" href="{{ url_for('meals.static', filename='css/meals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
 </head>
 <body style="background: rgb(201, 232, 195); min-height: 100vh;">
 
@@ -52,13 +54,8 @@
     </script>
 
     <!-- Header -->
-    <header class="header">
-        <div class="welcome-section">
-            <h1 class="welcome-text" id="welcomeText">Welcome, {{ user_name }}</h1>
-            <h2 class="app-title">Health Heroes ⭐</h2>
-        </div>
-        <a href="{{ url_for('auth.logout') }}" class="logout-btn" id="logoutBtn">Logout ⬆</a>
-    </header>
+    {% include 'header.html' %}
+    {% include 'navigation.html' %}
 
     <!-- Main Content -->
     <div class="meal-container">

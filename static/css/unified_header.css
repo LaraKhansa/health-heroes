@@ -1,0 +1,133 @@
+/* ========================================
+   UNIFIED HEADER STYLES - Health Heroes
+   ======================================== */
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Butterfly+Kids&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Paytone+One&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Header Container */
+.unified-header {
+    background-image: url('../images/header_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 25px 30px;
+    margin: 0;
+}
+
+/* Header Content Layout */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Left Section */
+.header-left {
+    flex: 1;
+}
+
+.welcome-text {
+    font-size: 20px;
+    color: #2d5f2e;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* App Title as Home Link */
+.app-title-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.app-title {
+    font-size: 28px;
+    color: #1b4d1b;
+    font-weight: 700;
+    font-family: "Paytone One", sans-serif;
+    margin: 0;
+    transition: all 0.2s ease;
+}
+
+.app-title:hover {
+    color: #4caf50;
+    transform: scale(1.02);
+}
+
+/* Right Section */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Logout Button - Clean & Simple */
+.logout-btn {
+    background: transparent;
+    border: none;
+    color: #2d5f2e;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 15px;
+    font-family: 'Nunito', sans-serif;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: #1b5e20;
+    transform: scale(1.05);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .unified-header {
+        padding: 20px 20px;
+    }
+    
+    .welcome-text {
+        font-size: 16px;
+    }
+    
+    .app-title {
+        font-size: 24px;
+    }
+    
+    .logout-btn {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .unified-header {
+        padding: 15px 15px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .header-right {
+        align-self: flex-end;
+    }
+    
+    .welcome-text {
+        font-size: 14px;
+    }
+    
+    .app-title {
+        font-size: 22px;
+    }
+}

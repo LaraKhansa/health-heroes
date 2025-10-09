@@ -1,0 +1,17 @@
+<!-- Unified Header Component for Health Heroes -->
+<header class="unified-header">
+    <div class="header-content">
+        <!-- Left Section: Welcome & App Title (Home Link) -->
+        <div class="header-left">
+            <p class="welcome-text">Welcome, {{ user_name }}</p>
+            <a href="{{ url_for('home_page') }}" class="app-title-link">
+                <h2 class="app-title"> Afiyah ⭐</h2>
+            </a>
+        </div>
+        
+        <!-- Right Section: Logout Button -->
+        <div class="header-right">
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout ⬆</a>
+        </div>
+    </div>
+</header>

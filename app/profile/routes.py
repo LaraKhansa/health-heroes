@@ -125,7 +125,7 @@ def add_child():
         if add_another == 'yes':
             return redirect(url_for('profile.add_child'))
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('home_page'))
     
     return render_template('add_child.html', family_profile=family_profile)
 

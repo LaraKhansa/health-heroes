@@ -96,7 +96,7 @@ def login():
         db.session.commit()
         
         flash(f'Welcome back, {user.name}!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('home_page'))
     
     return render_template('login.html')
 

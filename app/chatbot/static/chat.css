@@ -11,7 +11,7 @@
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-    min-height: 100vh;
+    min-height: 150vh;
 }
 
 /* Arabic font */
@@ -125,7 +125,7 @@ body {
     display: flex;
     max-width: 1400px;
     margin: 0 auto;
-    height: calc(100vh - 80px);
+    height: calc(150vh - 60px);
     gap: 1rem;
     padding: 1rem;
 }

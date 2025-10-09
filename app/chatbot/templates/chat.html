@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ 'مساعد الذكاء الاصطناعي' if language == 'ar' else 'AI Assistant' }} - Health Heroes</title>
+    <title>{{ 'مساعد الذكاء الاصطناعي' if language == 'ar' else 'AI Assistant' }} -  Afiyah</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,15 +12,14 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('chatbot.static', filename='chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
 </head>
 <body>
+    {% include 'navigation.html' %}
     <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div class="header-left">
-                <a href="{{ url_for('dashboard.dashboard') }}" class="back-btn">
-                    <span class="back-icon">{{ '←' if language == 'ar' else '→' }}</span>
-                </a>
                 <h1 class="header-title">
                     {{ '🤖 مساعد الأسرة الذكي' if language == 'ar' else '🤖 Family AI Assistant' }}
                 </h1>
@@ -33,11 +32,6 @@
                     <a href="?lang=ar" class="lang-btn {{ 'active' if language == 'ar' else '' }}">ع</a>
                 </div>
                 
-                <!-- User Name -->
-                <div class="user-info">
-                    <span class="user-icon">👤</span>
-                    <span class="user-name">{{ user_name }}</span>
-                </div>
             </div>
         </div>
     </header>

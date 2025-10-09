@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome -  Afiyah</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>   
+    <!-- Main Content -->
+    <main class="home-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h1 class="main-title">Welcome to  Afiyah! 🌟</h1>
+            <p class="main-subtitle">Your family's companion for healthy living</p>
+        </section>
+
+        <!-- Language Selector (Only on Home Page) -->
+        <section class="language-section">
+            <label for="languageSelect" class="language-label">
+                🌍 Choose Your Language
+            </label>
+            <select id="languageSelect" class="language-selector" onchange="changeLanguage(this.value)">
+                <option value="en" {% if language == 'en' %}selected{% endif %}>English</option>
+                <option value="ar" {% if language == 'ar' %}selected{% endif %}>العربية (Arabic)</option>
+            </select>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="features-grid">
+            
+            <!-- Activities Card -->
+            <a href="{{ url_for('screen_free.activities_list') }}" class="feature-card activities-card">
+                <div class="card-icon">🎮</div>
+                <h3 class="card-title">Screen-Free Activities</h3>
+                <p class="card-description">Discover fun, engaging activities tailored for your children</p>
+                <div class="card-footer">
+                    <span class="card-action">Explore Activities →</span>
+                </div>
+            </a>
+
+            <!-- Meals Card -->
+            <a href="{{ url_for('meals.meals_home') }}" class="feature-card meals-card">
+                <div class="card-icon">🍽️</div>
+                <h3 class="card-title">Meal Recommender</h3>
+                <p class="card-description">Create healthy, culturally-appropriate meals for your family</p>
+                <div class="card-footer">
+                    <span class="card-action">Create Meal →</span>
+                </div>
+            </a>
+
+            <!-- AI Assistant Card -->
+            <a href="{{ url_for('chatbot.chat_home') }}" class="feature-card chat-card">
+                <div class="card-icon">💬</div>
+                <h3 class="card-title">AI Chat Assistant</h3>
+                <p class="card-description">Get personalized parenting advice and support anytime</p>
+                <div class="card-footer">
+                    <span class="card-action">Start Chatting →</span>
+                </div>
+            </a>
+
+            <!-- Dashboard Card -->
+            <a href="{{ url_for('dashboard.dashboard') }}" class="feature-card dashboard-card">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">Family Dashboard</h3>
+                <p class="card-description">Track your family's progress, activities, and healthy habits</p>
+                <div class="card-footer">
+                    <span class="card-action">View Progress →</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- Quick Stats Section (Optional) -->
+        <section class="quick-stats">
+            <div class="stat-item">
+                <span class="stat-icon">✨</span>
+                <span class="stat-text">Personalized for Your Family</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🌍</span>
+                <span class="stat-text">Bilingual Support</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🤖</span>
+                <span class="stat-text">AI-Powered Recommendations</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function changeLanguage(lang) {
+            // Save language preference
+            localStorage.setItem('userLanguage', lang);
+            
+            // Redirect to home with language parameter
+            window.location.href = '/?lang=' + lang;
+        }
+    </script>
+</body>
+</html>

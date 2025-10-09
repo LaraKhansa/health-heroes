@@ -1,0 +1,29 @@
+
+
+<!-- Mobile Bottom Navigation -->
+<nav class="bottom-navigation">
+    <a href="{{ url_for('home_page') }}" class="bottom-nav-item {% if request.endpoint == 'home_page' %}active{% endif %}">
+        <span class="bottom-nav-icon">🏠</span>
+        <span class="bottom-nav-label">Home</span>
+    </a>
+    
+    <a href="{{ url_for('screen_free.activities_list') }}" class="bottom-nav-item {% if request.endpoint == 'screen_free.activities_list' %}active{% endif %}">
+        <span class="bottom-nav-icon">🎮</span>
+        <span class="bottom-nav-label">Activities</span>
+    </a>
+    
+    <a href="{{ url_for('meals.meals_home') }}" class="bottom-nav-item {% if request.endpoint in ['meals.meals_home', 'meals.view_meal'] %}active{% endif %}">
+        <span class="bottom-nav-icon">🍽️</span>
+        <span class="bottom-nav-label">Meals</span>
+    </a>
+    
+    <a href="{{ url_for('chatbot.chat_home') }}" class="bottom-nav-item {% if request.endpoint == 'chatbot.chat_home' %}active{% endif %}">
+        <span class="bottom-nav-icon">💬</span>
+        <span class="bottom-nav-label">Chat</span>
+    </a>
+    
+    <a href="{{ url_for('dashboard.dashboard') }}" class="bottom-nav-item {% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}">
+        <span class="bottom-nav-icon">📊</span>
+        <span class="bottom-nav-label">Dashboard</span>
+    </a>
+</nav>

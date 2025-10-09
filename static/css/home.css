@@ -1,0 +1,278 @@
+/* ========================================
+   HOME PAGE STYLES - Health Heroes
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Paytone+One&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Body and Main Container */
+body {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Welcome Section */
+.welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.main-title {
+    font-size: 48px;
+    color: #1b4d1b;
+    font-weight: 800;
+    margin-bottom: 15px;
+    font-family: "Paytone One", sans-serif;
+}
+
+.main-subtitle {
+    font-size: 20px;
+    color: #4a4a4a;
+    font-weight: 400;
+}
+
+/* Language Section */
+.language-section {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.language-label {
+    display: block;
+    margin-bottom: 15px;
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.language-selector {
+    padding: 12px 20px;
+    border: 3px solid #66bb6a;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2e7d32;
+    background: white;
+    cursor: pointer;
+    min-width: 200px;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.language-selector:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
+.language-selector:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.3);
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* Feature Cards */
+.feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 35px 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    transition: height 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card:hover::before {
+    height: 100%;
+    opacity: 0.05;
+}
+
+/* Card Specific Colors */
+.dashboard-card::before {
+    background: linear-gradient(135deg, #42a5f5 0%, #478ed1 100%);
+}
+
+.activities-card::before {
+    background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+}
+
+.meals-card::before {
+    background: linear-gradient(135deg, #ff7043 0%, #f4511e 100%);
+}
+
+.chat-card::before {
+    background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+}
+
+/* Card Content */
+.card-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2e7d32;
+    margin-bottom: 12px;
+}
+
+.card-description {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.card-footer {
+    margin-top: auto;
+}
+
+.card-action {
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .card-action {
+    transform: translateX(5px);
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-text {
+    color: #4a4a4a;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .home-container {
+        padding: 30px 15px;
+    }
+    
+    .main-title {
+        font-size: 36px;
+    }
+    
+    .main-subtitle {
+        font-size: 18px;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr; /* Stack cards on smaller screens */
+        gap: 20px;
+    }
+    
+    .quick-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .home-container {
+        padding: 20px 15px 90px 15px; /* Extra bottom padding for bottom nav */
+    }
+    
+    .main-title {
+        font-size: 32px;
+    }
+    
+    .main-subtitle {
+        font-size: 16px;
+    }
+    
+    .language-section {
+        padding: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .language-label {
+        font-size: 16px;
+    }
+    
+    .feature-card {
+        padding: 25px 20px;
+    }
+    
+    .card-icon {
+        font-size: 48px;
+    }
+    
+    .card-title {
+        font-size: 20px;
+    }
+    
+    .card-description {
+        font-size: 14px;
+    }
+}
