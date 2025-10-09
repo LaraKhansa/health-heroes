@@ -1,4 +1,4 @@
-# Health Heroes ⭐
+# Afiyah⭐
 
 > Empowering Families for Healthier Lives
 
@@ -8,7 +8,7 @@ A culturally-sensitive, AI-powered family health companion designed to help pare
 
 ## 🎯 About the Project
 
-**Health Heroes** is part of the startAD AI for Good Sandbox challenge, tackling the **Homegrown Health Heroes** challenge to combat childhood obesity in the UAE through:
+** Afiyah** is part of the startAD AI for Good Sandbox challenge, tackling the **Homegrown Health Heroes** challenge to combat childhood obesity in the UAE through:
 
 - Personalized nutrition and meal recommendations
 - Screen-free activity suggestions
@@ -32,11 +32,8 @@ This solution addresses childhood obesity by supporting families with practical 
 - ✅ **Activity Tracking** - Mark activities as complete and earn badges
 - ✅ **Progress Dashboard** - View family activity statistics
 - ✅ **Meal Recommender** - Personalized meal suggestions based on family preferences, dietary restrictions, and cultural context
+- ✅ **AI Chat Companion for parental support** 
 
-### Coming Soon
-- 🔄 AI Chat Companion for parental support
-- 🔄 Enhanced Progress Analytics
-- 🔄 Nutrition tracking
 
 
 
