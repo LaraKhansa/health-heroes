@@ -32,7 +32,13 @@ const translations = {
         loadingTitle: 'Generating Your Meal',
         loadingSubtitle: 'Our AI chef is preparing something delicious...',
         regeneratingTitle: 'Modifying Your Recipe',
-        regeneratingSubtitle: 'Making it even better...'
+        regeneratingSubtitle: 'Making it even better...',
+        regenerateText: 'Modify Recipe',
+        dialogTitle: 'Modify This Recipe',
+        dialogDesc: "Tell us what you'd like to change:",
+        submitBtn: 'Submit',
+        cancelBtn: 'Cancel',
+        feedbackPlaceholder: 'e.g., Make it less spicy, Add more vegetables, Use less oil'
     },
     ar: {
         welcomeText: 'مرحباً',
@@ -55,7 +61,13 @@ const translations = {
         loadingTitle: 'جاري إنشاء وجبتك',
         loadingSubtitle: 'الطاهي الذكي يحضر لك شيئاً لذيذاً...',
         regeneratingTitle: 'جاري تعديل الوصفة',
-        regeneratingSubtitle: 'نجعلها أفضل...'
+        regeneratingSubtitle: 'نجعلها أفضل...',
+        regenerateText: 'تعديل الوصفة',
+        dialogTitle: 'تعديل هذه الوصفة',
+        dialogDesc: 'أخبرنا بما تريد تغييره:',
+        submitBtn: 'إرسال',
+        cancelBtn: 'إلغاء',
+        feedbackPlaceholder: 'مثال: اجعلها أقل حرارة، أضف المزيد من الخضروات، استخدم زيت أقل'
     }
 };
 
@@ -63,26 +75,60 @@ const translations = {
 function updatePageText() {
     const t = translations[currentLanguage];
     
-    // Header
-    const userName = document.getElementById('welcomeText').textContent.split(', ')[1] || 'User';
-    document.getElementById('welcomeText').textContent = `${t.welcomeText}, ${userName}`;
-    document.getElementById('logoutBtn').textContent = t.logoutBtn;
+    // FIXED: Add null checks for ALL elements before accessing properties
+    
+    // Header (may not exist on all pages)
+    const welcomeEl = document.getElementById('welcomeText');
+    if (welcomeEl) {
+        const userName = welcomeEl.textContent.split(', ')[1] || 'User';
+        welcomeEl.textContent = `${t.welcomeText}, ${userName}`;
+    }
+    
+    const logoutEl = document.getElementById('logoutBtn');
+    if (logoutEl) {
+        logoutEl.textContent = t.logoutBtn;
+    }
     
     // Page header
-    document.getElementById('pageTitle').textContent = t.pageTitle;
-    document.getElementById('pageSubtitle').textContent = t.pageSubtitle;
+    const pageTitleEl = document.getElementById('pageTitle');
+    if (pageTitleEl) {
+        pageTitleEl.textContent = t.pageTitle;
+    }
+    
+    const pageSubtitleEl = document.getElementById('pageSubtitle');
+    if (pageSubtitleEl) {
+        pageSubtitleEl.textContent = t.pageSubtitle;
+    }
     
     // Ingredients section
-    document.getElementById('ingredientsTitle').textContent = t.ingredientsTitle;
-    document.getElementById('ingredientsDesc').textContent = t.ingredientsDesc;
-    document.getElementById('customIngLabel').textContent = t.customIngLabel;
-    document.getElementById('custom_ingredient').placeholder = t.customIngPlaceholder;
+    const ingredientsTitleEl = document.getElementById('ingredientsTitle');
+    if (ingredientsTitleEl) {
+        ingredientsTitleEl.textContent = t.ingredientsTitle;
+    }
+    
+    const ingredientsDescEl = document.getElementById('ingredientsDesc');
+    if (ingredientsDescEl) {
+        ingredientsDescEl.textContent = t.ingredientsDesc;
+    }
+    
+    const customIngLabelEl = document.getElementById('customIngLabel');
+    if (customIngLabelEl) {
+        customIngLabelEl.textContent = t.customIngLabel;
+    }
+    
+    const customIngEl = document.getElementById('custom_ingredient');
+    if (customIngEl) {
+        customIngEl.placeholder = t.customIngPlaceholder;
+    }
     
     // Translate category headers
     document.querySelectorAll('.category-header').forEach(header => {
         const category = header.getAttribute('data-category');
         if (category && categoryTranslations[category]) {
-            header.textContent = categoryTranslations[category][currentLanguage];
+            const span = header.querySelector('span');
+            if (span) {
+                span.textContent = categoryTranslations[category][currentLanguage];
+            }
         }
     });
     
@@ -97,8 +143,15 @@ function updatePageText() {
     });
     
     // Cuisine type section
-    document.getElementById('cuisineTypeTitle').textContent = t.cuisineTypeTitle;
-    document.getElementById('cuisineTypeDesc').textContent = t.cuisineTypeDesc;
+    const cuisineTypeTitleEl = document.getElementById('cuisineTypeTitle');
+    if (cuisineTypeTitleEl) {
+        cuisineTypeTitleEl.textContent = t.cuisineTypeTitle;
+    }
+    
+    const cuisineTypeDescEl = document.getElementById('cuisineTypeDesc');
+    if (cuisineTypeDescEl) {
+        cuisineTypeDescEl.textContent = t.cuisineTypeDesc;
+    }
     
     // Translate cuisine type labels
     document.querySelectorAll('.cuisine-type-name').forEach(elem => {
@@ -118,8 +171,15 @@ function updatePageText() {
     });
     
     // Meal type section
-    document.getElementById('mealTypeTitle').textContent = t.mealTypeTitle;
-    document.getElementById('mealTypeDesc').textContent = t.mealTypeDesc;
+    const mealTypeTitleEl = document.getElementById('mealTypeTitle');
+    if (mealTypeTitleEl) {
+        mealTypeTitleEl.textContent = t.mealTypeTitle;
+    }
+    
+    const mealTypeDescEl = document.getElementById('mealTypeDesc');
+    if (mealTypeDescEl) {
+        mealTypeDescEl.textContent = t.mealTypeDesc;
+    }
     
     // Translate meal type labels
     document.querySelectorAll('.meal-type-name').forEach(elem => {
@@ -131,16 +191,46 @@ function updatePageText() {
     });
     
     // Buttons
-    document.getElementById('generateText').textContent = t.generateText;
-    document.getElementById('historyLink').textContent = t.historyLink;
+    const generateTextEl = document.getElementById('generateText');
+    if (generateTextEl) {
+        generateTextEl.textContent = t.generateText;
+    }
+    
+    const historyLinkEl = document.getElementById('historyLink');
+    if (historyLinkEl) {
+        historyLinkEl.textContent = t.historyLink;
+    }
 
-    // Regenerate button and modal
-    document.getElementById('regenerateText').textContent = t.regenerateText;
-    document.getElementById('dialogTitle').textContent = t.dialogTitle;
-    document.getElementById('dialogDesc').textContent = t.dialogDesc;
-    document.getElementById('submitBtn').textContent = t.submitBtn;
-    document.getElementById('cancelBtn').textContent = t.cancelBtn;
-    document.getElementById('feedbackInput').placeholder = t.feedbackPlaceholder;
+    // Check if elements exist before updating (for modal dialog that may not be on page)
+    const regenerateTextEl = document.getElementById('regenerateText');
+    if (regenerateTextEl) {
+        regenerateTextEl.textContent = t.regenerateText;
+    }
+    
+    const dialogTitleEl = document.getElementById('dialogTitle');
+    if (dialogTitleEl) {
+        dialogTitleEl.textContent = t.dialogTitle;
+    }
+    
+    const dialogDescEl = document.getElementById('dialogDesc');
+    if (dialogDescEl) {
+        dialogDescEl.textContent = t.dialogDesc;
+    }
+    
+    const submitBtnEl = document.getElementById('submitBtn');
+    if (submitBtnEl) {
+        submitBtnEl.textContent = t.submitBtn;
+    }
+    
+    const cancelBtnEl = document.getElementById('cancelBtn');
+    if (cancelBtnEl) {
+        cancelBtnEl.textContent = t.cancelBtn;
+    }
+    
+    const feedbackInputEl = document.getElementById('feedbackInput');
+    if (feedbackInputEl) {
+        feedbackInputEl.placeholder = t.feedbackPlaceholder;
+    }
 }
 
 // Update selected ingredients count
@@ -151,16 +241,23 @@ function updateSelectedCount() {
     const t = translations[currentLanguage];
     const countText = t.countText.replace('{count}', count);
     
-    document.getElementById('countText').textContent = countText;
+    const countTextEl = document.getElementById('countText');
+    if (countTextEl) {
+        countTextEl.textContent = countText;
+    }
     
     // Enable/disable generate button
     const generateBtn = document.getElementById('generateBtn');
-    const customInput = document.getElementById('custom_ingredient').value.trim();
+    const customInput = document.getElementById('custom_ingredient');
     
-    if (count > 0 || customInput) {
-        generateBtn.disabled = false;
-    } else {
-        generateBtn.disabled = true;
+    if (generateBtn && customInput) {
+        const customInputValue = customInput.value.trim();
+        
+        if (count > 0 || customInputValue) {
+            generateBtn.disabled = false;
+        } else {
+            generateBtn.disabled = true;
+        }
     }
 }
 
@@ -170,24 +267,31 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectedCount();
 
     // Listen for custom ingredient changes
-    document.getElementById('custom_ingredient').addEventListener('input', updateSelectedCount);
+    const customIngEl = document.getElementById('custom_ingredient');
+    if (customIngEl) {
+        customIngEl.addEventListener('input', updateSelectedCount);
+    }
 
     // Form validation
-    document.getElementById('mealForm').addEventListener('submit', function(e) {
-        const checkboxes = document.querySelectorAll('input[name="ingredients"]:checked');
-        const customInput = document.getElementById('custom_ingredient').value.trim();
-        
-        if (checkboxes.length === 0 && !customInput) {
-            e.preventDefault();
-            alert(translations[currentLanguage].selectIngredient);
-            return false;
-        }
-        
-        // Show loading overlay
-        showLoadingOverlay();
-        
-        // Form will submit normally, loading will show until page redirects
-    });
+    const mealFormEl = document.getElementById('mealForm');
+    if (mealFormEl) {
+        mealFormEl.addEventListener('submit', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="ingredients"]:checked');
+            const customInput = document.getElementById('custom_ingredient');
+            const customInputValue = customInput ? customInput.value.trim() : '';
+            
+            if (checkboxes.length === 0 && !customInputValue) {
+                e.preventDefault();
+                alert(translations[currentLanguage].selectIngredient);
+                return false;
+            }
+            
+            // Show loading overlay
+            showLoadingOverlay();
+            
+            // Form will submit normally, loading will show until page redirects
+        });
+    }
 });
 
 // Show loading overlay
@@ -198,8 +302,15 @@ function showLoadingOverlay() {
         
         // Update text based on language
         const t = translations[currentLanguage];
-        document.getElementById('loadingTitle').textContent = t.loadingTitle || 'Generating Your Meal';
-        document.getElementById('loadingSubtitle').textContent = t.loadingSubtitle || 'Our AI chef is preparing something delicious...';
+        const loadingTitleEl = document.getElementById('loadingTitle');
+        const loadingSubtitleEl = document.getElementById('loadingSubtitle');
+        
+        if (loadingTitleEl) {
+            loadingTitleEl.textContent = t.loadingTitle || 'Generating Your Meal';
+        }
+        if (loadingSubtitleEl) {
+            loadingSubtitleEl.textContent = t.loadingSubtitle || 'Our AI chef is preparing something delicious...';
+        }
     }
 }
 

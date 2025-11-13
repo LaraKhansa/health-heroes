@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- Shopping List (Missing Ingredients) -->
+            <!-- Shopping List (Missing Ingredients)
             {% set missing = meal.get_missing_ingredients() %}
             {% if missing and missing|length > 0 %}
             <div class="shopping-list-section">
@@ -107,7 +107,7 @@
                     {% endfor %}
                 </ul>
             </div>
-            {% endif %}
+            {% endif %} -->
 
             <!-- Ingredients Section -->
             <div class="ingredients-section">
@@ -281,11 +281,11 @@
             document.getElementById('cookTimeLabel').textContent = t.cookTimeLabel;
             
             // Sections
-            const shoppingTitle = document.getElementById('shoppingListTitle');
-            if (shoppingTitle) shoppingTitle.textContent = t.shoppingListTitle;
+            // const shoppingTitle = document.getElementById('shoppingListTitle');
+            // if (shoppingTitle) shoppingTitle.textContent = t.shoppingListTitle;
             
-            const shoppingDesc = document.getElementById('shoppingListDesc');
-            if (shoppingDesc) shoppingDesc.textContent = t.shoppingListDesc;
+            // const shoppingDesc = document.getElementById('shoppingListDesc');
+            // if (shoppingDesc) shoppingDesc.textContent = t.shoppingListDesc;
             
             document.getElementById('ingredientsTitle').textContent = t.ingredientsTitle;
             document.getElementById('instructionsTitle').textContent = t.instructionsTitle;

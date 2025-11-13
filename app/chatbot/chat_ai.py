@@ -95,7 +95,7 @@ def generate_chat_response(user, family_profile, children, conversation_history,
         system_prompt = build_system_prompt(user, family_profile, children)
         
         # Create the model
-        model = genai.GenerativeModel('gemini-2.5-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Build conversation history for context
         chat_history = []
@@ -157,7 +157,7 @@ def generate_conversation_title(first_message, language='en'):
     """
     
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         if language == 'ar':
             prompt = f"قم بإنشاء عنوان قصير (3-5 كلمات) لمحادثة تبدأ بهذه الرسالة: '{first_message}'. أعط العنوان فقط، بدون علامات تنصيص."

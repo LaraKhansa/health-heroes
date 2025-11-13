@@ -3,3 +3,7 @@ Flask-Login
 Werkzeug
 google-genai
 python-dotenv
+sqlalchemy
+flask_sqlalchemy
+google.generativeai
+

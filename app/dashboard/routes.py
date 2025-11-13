@@ -1,55 +1,49 @@
 from flask import Blueprint, render_template, request, session
-from sqlalchemy import text
 from db import db
+from app.dashboard.dashboard_helpers import (
+    get_family_screen_free_activities_count,
+    get_family_healthy_meals_count,
+    get_family_streak_days,
+    get_family_weekly_data,
+    get_family_monthly_data
+)
 
 dashboard_bp = Blueprint("dashboard", __name__, template_folder="templates")
 
 @dashboard_bp.route("/dashboard")
 def dashboard():
+    """
+    Family Dashboard - Shows accurate family-specific statistics
+    """
+    # --- Get user ID from session ---
+    user_id = session.get('user_id')
+    
+    # If user not logged in, redirect (this should be handled by login_required decorator in production)
+    if not user_id:
+        from flask import redirect, url_for
+        return redirect(url_for('auth.login'))
+    
     # --- Language handling ---
-    language = session.get('language', 'en')  # use whatever is stored from main app
-
-    # --- Screen-Free Activities Completed ---
-    result = db.session.execute(text("SELECT COUNT(*) FROM activity_completions"))
-    screen_free_activities = result.scalar() or 0
-
-    # --- Healthy Meals Added ---
-    result = db.session.execute(text("SELECT COUNT(*) FROM meals"))
-    healthy_meals = result.scalar() or 0
-
-    # --- Family streak days ---
-    streak_days_result = db.session.execute(text("""
-        SELECT COUNT(DISTINCT DATE(completed_at))
-        FROM activity_completions
-        WHERE completed_at >= DATE('now', '-7 day')
-    """))
-    streak_days = streak_days_result.scalar() or 0
-
-    # --- Weekly Screen-Free Data ---
-    weekly_query = db.session.execute(text("""
-        SELECT strftime('%w', completed_at) AS weekday, COUNT(*) as count
-        FROM activity_completions
-        WHERE completed_at >= DATE('now', '-7 day')
-        GROUP BY weekday
-        ORDER BY weekday
-    """))
-    weekday_map = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-    weekly_data = {day: 0 for day in weekday_map}
-    for row in weekly_query:
-        weekly_data[weekday_map[int(row[0])]] = row[1]
-
-    # --- Monthly Screen-Free Data ---
-    monthly_query = db.session.execute(text("""
-        SELECT strftime('%W', completed_at) AS week, COUNT(*) as count
-        FROM activity_completions
-        WHERE strftime('%m', completed_at) = strftime('%m', 'now')
-        GROUP BY week
-        ORDER BY week
-    """))
-    monthly_data = {}
-    for i, row in enumerate(monthly_query, start=1):
-        monthly_data[f"Week {i}"] = row[1]
-
+    language = session.get('language', 'en')
+    
+    # --- Get family-specific counts using helper functions ---
+    
+    # Screen-Free Activities Completed (for THIS family only)
+    screen_free_activities = get_family_screen_free_activities_count(user_id)
+    
+    # Healthy Meals Added (for THIS family only)
+    healthy_meals = get_family_healthy_meals_count(user_id)
+    
+    # Family streak days (for THIS family only)
+    streak_days = get_family_streak_days(user_id)
+    
+    # Weekly Screen-Free Data (for THIS family only)
+    weekly_data = get_family_weekly_data(user_id)
+    
+    # Monthly Screen-Free Data (for THIS family only)
+    monthly_data = get_family_monthly_data(user_id)
+    
+    # Motivational tip
     motivational_tip = "Keep up the great work! Try 1 more veggie meal next week 🌱"
 
     return render_template(

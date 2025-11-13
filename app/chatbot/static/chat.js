@@ -18,6 +18,8 @@ const sendBtn = document.getElementById('sendBtn');
 const newChatBtn = document.getElementById('newChatBtn');
 const startChatBtn = document.getElementById('startChatBtn');
 const sidebarToggle = document.getElementById('sidebarToggle');
+const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+const openSidebarBtn = document.getElementById('openSidebarBtn');
 const sidebar = document.getElementById('sidebar');
 
 // ===================
@@ -55,6 +57,30 @@ function setupEventListeners() {
     // Mobile sidebar toggle
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+    
+    // Close sidebar button
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                openSidebarBtn.classList.remove('visible');
+            } else {
+                closeSidebar();
+            }
+        });
+    }
+    
+    // Open sidebar button
+    if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            sidebar.classList.remove('hidden');
+            openSidebarBtn.classList.remove('visible');
+        });
     }
 }
 
@@ -428,6 +454,14 @@ function autoResizeTextarea() {
 
 function toggleSidebar() {
     sidebar.classList.toggle('active');
+}
+
+function closeSidebar() {
+    sidebar.classList.add('hidden');
+    sidebar.classList.remove('active');
+    if (window.innerWidth > 768) {
+        openSidebarBtn.classList.add('visible');
+    }
 }
 
 function escapeHtml(text) {

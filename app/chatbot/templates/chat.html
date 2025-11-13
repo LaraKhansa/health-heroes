@@ -13,31 +13,19 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('chatbot.static', filename='chat.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
 </head>
 <body>
-    {% include 'navigation.html' %}
     <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <h1 class="header-title">
-                    {{ '🤖 مساعد الأسرة الذكي' if language == 'ar' else '🤖 Family AI Assistant' }}
-                </h1>
-            </div>
-            
-            <div class="header-right">
-                <!-- Language Toggle -->
-                <div class="language-toggle">
-                    <a href="?lang=en" class="lang-btn {{ 'active' if language == 'en' else '' }}">EN</a>
-                    <a href="?lang=ar" class="lang-btn {{ 'active' if language == 'ar' else '' }}">ع</a>
-                </div>
-                
-            </div>
-        </div>
-    </header>
+    {% include 'header.html' %}
+    {% include 'navigation.html' %}
 
     <!-- Main Container -->
     <div class="chat-container">
+        <!-- Open Sidebar Button (shown when sidebar is hidden on desktop) -->
+        <button class="open-sidebar-btn" id="openSidebarBtn" title="{{ 'فتح القائمة الجانبية' if language == 'ar' else 'Open Sidebar' }}">
+            ☰
+        </button>
         
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
@@ -45,9 +33,14 @@
                 <h2 class="sidebar-title">
                     {{ 'محادثاتي' if language == 'ar' else 'My Conversations' }}
                 </h2>
-                <button class="new-chat-btn" id="newChatBtn">
-                    {{ '+ جديد' if language == 'ar' else '+ New' }}
-                </button>
+                <div class="sidebar-header-buttons">
+                    <button class="new-chat-btn" id="newChatBtn">
+                        {{ '+ جديد' if language == 'ar' else '+ New' }}
+                    </button>
+                    <button class="close-sidebar-btn" id="closeSidebarBtn" title="{{ 'إغلاق' if language == 'ar' else 'Close' }}">
+                        ✕
+                    </button>
+                </div>
             </div>
             
             <div class="conversations-list" id="conversationsList">

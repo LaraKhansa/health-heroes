@@ -4,9 +4,8 @@ Handles all AI-related meal generation logic
 """
 
 import os
-import json  # Move import to top level
-from google import genai
-from google.genai import types
+import json
+from openai import OpenAI
 from app.meal_recommender.prompts import get_meal_generation_prompt
 
 
@@ -31,7 +30,11 @@ def generate_meal(selected_ingredients, meal_type, cuisine_type, child_profiles,
     
     try:
         # Initialize Gemini client
-        client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+        client = OpenAI(
+        base_url="https://router.huggingface.co/v1",
+        api_key=os.environ["HF_TOKEN"],
+    )
+
         
         # Build the prompt using prompt template
         prompt = get_meal_generation_prompt(
@@ -50,17 +53,19 @@ def generate_meal(selected_ingredients, meal_type, cuisine_type, child_profiles,
         print(f"   - Language: {language}")
         
         # Call Gemini API
-        response = client.models.generate_content(
-            model='gemini-2.5-pro',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=1.0,
-                response_mime_type="application/json"
-            )
+        completion = client.chat.completions.create(
+        model="openai/gpt-oss-20b:groq",
+        messages=[
+            {
+            "role": "user",
+            "content": prompt
+            }
+        ]
         )
+        response = completion.choices[0].message.content
         
         # Parse response text into JSON
-        meal_data = json.loads(response.text)
+        meal_data = json.loads(response)
         
         # Validate response has required fields
         required_fields = [

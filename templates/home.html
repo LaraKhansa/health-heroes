@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if language == 'ar' %}ar{% else %}en{% endif %}" dir="{% if language == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome -  Afiyah</title>
+    <title>{% if language == 'ar' %}مرحباً - عافية{% else %}Welcome - Afiyah{% endif %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
@@ -12,14 +12,23 @@
     <main class="home-container">
         <!-- Welcome Section -->
         <section class="welcome-section">
-            <h1 class="main-title">Welcome to  Afiyah! 🌟</h1>
-            <p class="main-subtitle">Your family's companion for healthy living</p>
+            {% if language == 'ar' %}
+                <h1 class="main-title">مرحباً بك في عافية! 🌟</h1>
+                <p class="main-subtitle">رفيق عائلتك لحياة صحية</p>
+            {% else %}
+                <h1 class="main-title">Welcome to Afiyah! 🌟</h1>
+                <p class="main-subtitle">Your family's companion for healthy living</p>
+            {% endif %}
         </section>
 
         <!-- Language Selector (Only on Home Page) -->
         <section class="language-section">
             <label for="languageSelect" class="language-label">
-                🌍 Choose Your Language
+                {% if language == 'ar' %}
+                    🌍 اختر لغتك
+                {% else %}
+                    🌍 Choose Your Language
+                {% endif %}
             </label>
             <select id="languageSelect" class="language-selector" onchange="changeLanguage(this.value)">
                 <option value="en" {% if language == 'en' %}selected{% endif %}>English</option>
@@ -33,58 +42,105 @@
             <!-- Activities Card -->
             <a href="{{ url_for('screen_free.activities_list') }}" class="feature-card activities-card">
                 <div class="card-icon">🎮</div>
-                <h3 class="card-title">Screen-Free Activities</h3>
-                <p class="card-description">Discover fun, engaging activities tailored for your children</p>
-                <div class="card-footer">
-                    <span class="card-action">Explore Activities →</span>
-                </div>
+                {% if language == 'ar' %}
+                    <h3 class="card-title">أنشطة بدون شاشات</h3>
+                    <p class="card-description">اكتشف أنشطة ممتعة ومفيدة مصممة خصيصاً لأطفالك</p>
+                    <div class="card-footer">
+                        <span class="card-action">استكشف الأنشطة ←</span>
+                    </div>
+                {% else %}
+                    <h3 class="card-title">Screen-Free Activities</h3>
+                    <p class="card-description">Discover fun, engaging activities tailored for your children</p>
+                    <div class="card-footer">
+                        <span class="card-action">Explore Activities →</span>
+                    </div>
+                {% endif %}
             </a>
 
             <!-- Meals Card -->
             <a href="{{ url_for('meals.meals_home') }}" class="feature-card meals-card">
                 <div class="card-icon">🍽️</div>
-                <h3 class="card-title">Meal Recommender</h3>
-                <p class="card-description">Create healthy, culturally-appropriate meals for your family</p>
-                <div class="card-footer">
-                    <span class="card-action">Create Meal →</span>
-                </div>
+                {% if language == 'ar' %}
+                    <h3 class="card-title">مقترح الوجبات</h3>
+                    <p class="card-description">أنشئ وجبات صحية وملائمة ثقافياً لعائلتك</p>
+                    <div class="card-footer">
+                        <span class="card-action">إنشاء وجبة ←</span>
+                    </div>
+                {% else %}
+                    <h3 class="card-title">Meal Recommender</h3>
+                    <p class="card-description">Create healthy, culturally-appropriate meals for your family</p>
+                    <div class="card-footer">
+                        <span class="card-action">Create Meal →</span>
+                    </div>
+                {% endif %}
             </a>
 
             <!-- AI Assistant Card -->
             <a href="{{ url_for('chatbot.chat_home') }}" class="feature-card chat-card">
                 <div class="card-icon">💬</div>
-                <h3 class="card-title">AI Chat Assistant</h3>
-                <p class="card-description">Get personalized parenting advice and support anytime</p>
-                <div class="card-footer">
-                    <span class="card-action">Start Chatting →</span>
-                </div>
+                {% if language == 'ar' %}
+                    <h3 class="card-title">المساعد الذكي</h3>
+                    <p class="card-description">احصل على نصائح تربوية مخصصة ودعم في أي وقت</p>
+                    <div class="card-footer">
+                        <span class="card-action">ابدأ المحادثة ←</span>
+                    </div>
+                {% else %}
+                    <h3 class="card-title">AI Chat Assistant</h3>
+                    <p class="card-description">Get personalized parenting advice and support anytime</p>
+                    <div class="card-footer">
+                        <span class="card-action">Start Chatting →</span>
+                    </div>
+                {% endif %}
             </a>
 
             <!-- Dashboard Card -->
             <a href="{{ url_for('dashboard.dashboard') }}" class="feature-card dashboard-card">
                 <div class="card-icon">📊</div>
-                <h3 class="card-title">Family Dashboard</h3>
-                <p class="card-description">Track your family's progress, activities, and healthy habits</p>
-                <div class="card-footer">
-                    <span class="card-action">View Progress →</span>
-                </div>
+                {% if language == 'ar' %}
+                    <h3 class="card-title">لوحة العائلة</h3>
+                    <p class="card-description">تتبع تقدم عائلتك وأنشطتهم وعاداتهم الصحية</p>
+                    <div class="card-footer">
+                        <span class="card-action">عرض التقدم ←</span>
+                    </div>
+                {% else %}
+                    <h3 class="card-title">Family Dashboard</h3>
+                    <p class="card-description">Track your family's progress, activities, and healthy habits</p>
+                    <div class="card-footer">
+                        <span class="card-action">View Progress →</span>
+                    </div>
+                {% endif %}
             </a>
         </section>
 
-        <!-- Quick Stats Section (Optional) -->
+        <!-- Quick Stats Section -->
         <section class="quick-stats">
-            <div class="stat-item">
-                <span class="stat-icon">✨</span>
-                <span class="stat-text">Personalized for Your Family</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">🌍</span>
-                <span class="stat-text">Bilingual Support</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">🤖</span>
-                <span class="stat-text">AI-Powered Recommendations</span>
-            </div>
+            {% if language == 'ar' %}
+                <div class="stat-item">
+                    <span class="stat-icon">✨</span>
+                    <span class="stat-text">مخصص لعائلتك</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🌍</span>
+                    <span class="stat-text">دعم ثنائي اللغة</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🤖</span>
+                    <span class="stat-text">توصيات ذكية</span>
+                </div>
+            {% else %}
+                <div class="stat-item">
+                    <span class="stat-icon">✨</span>
+                    <span class="stat-text">Personalized for Your Family</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🌍</span>
+                    <span class="stat-text">Bilingual Support</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🤖</span>
+                    <span class="stat-text">AI-Powered Recommendations</span>
+                </div>
+            {% endif %}
         </section>
     </main>
 

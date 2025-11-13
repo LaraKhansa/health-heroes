@@ -41,8 +41,11 @@
     <!-- Language detection script -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        let currentLanguage = urlParams.get('lang') || localStorage.getItem('userLanguage') || 'en';
+        // FIXED: Changed from 'let' to 'var' to make it globally accessible
+        var currentLanguage = urlParams.get('lang') || localStorage.getItem('userLanguage') || 'en';
         localStorage.setItem('userLanguage', currentLanguage);
+        
+        console.log('🔧 Language set to:', currentLanguage);
         
         if (currentLanguage === 'ar') {
             document.documentElement.setAttribute('dir', 'rtl');

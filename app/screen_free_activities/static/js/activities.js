@@ -2,7 +2,7 @@
 const translations = {
     en: {
         welcome: 'Welcome',
-        appTitle: 'Health Heroes ⭐',
+        appTitle: 'Afiyah ⭐',
         logout: 'Logout ⬆',
         pageTitle: 'Screen-Free Activities',
         pageSubtitle: 'Engaging activities tailored for your family',
@@ -38,7 +38,7 @@ const translations = {
     },
     ar: {
         welcome: 'مرحباً',
-        appTitle: 'أبطال الصحة ⭐',
+        appTitle: 'عافية⭐',
         logout: 'تسجيل الخروج ⬆',
         pageTitle: 'أنشطة بدون شاشات',
         pageSubtitle: 'أنشطة جذابة مصممة لعائلتك',
