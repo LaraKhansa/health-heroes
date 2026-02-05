@@ -47,7 +47,6 @@ This solution addresses childhood obesity by supporting families with practical 
 - **Deployment:** TBD
 
 
-
 ## 🚀 Getting Started
 
 ### Installation
@@ -132,6 +131,12 @@ python app.py
 The application will be available at: `http://localhost:5000`
 
 ---
+
+## 👥 Team Members
+
+- **Lara Al Khansa**
+- **Mohammad Ali Oussayli**
+- **Maab Majzoub**
 
 
 **Made with ❤️ for healthier families in the UAE**
