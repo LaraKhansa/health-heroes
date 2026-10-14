@@ -3,11 +3,16 @@ Database Models for Health Heroes
 """
 
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 
 db = SQLAlchemy()
+
+
+def utcnow():
+    """Current UTC time as a naive datetime (how SQLite stores it)"""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 class User(db.Model):
     """
@@ -21,7 +26,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
     last_login = db.Column(db.DateTime)
     
     # Relationships
@@ -71,8 +76,8 @@ class FamilyProfile(db.Model):
     dinner_time = db.Column(db.String(5), default='19:00')
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow)
     
     # Relationships
     children = db.relationship('Child', backref='family_profile', cascade='all, delete-orphan')
@@ -129,8 +134,8 @@ class Child(db.Model):
     special_needs = db.Column(db.Text)
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow)
     
     # Helper methods for JSON fields
     def get_interests(self):
@@ -153,7 +158,7 @@ class Child(db.Model):
         """Calculate current age from birthdate"""
         if not self.birthdate:
             return None
-        today = datetime.utcnow().date()
+        today = utcnow().date()
         age = today.year - self.birthdate.year
         # Adjust if birthday hasn't occurred this year
         if today.month < self.birthdate.month or (today.month == self.birthdate.month and today.day < self.birthdate.day):
@@ -178,6 +183,11 @@ class Child(db.Model):
             return "7-8 years"
         else:
             return "8+ years"
+    
+    def get_activity_age_range(self):
+        """Closest age range that activities exist for (activities cover 2-8 years)"""
+        age_range = self.get_age_range()
+        return {"0-2 years": "2-3 years", "8+ years": "7-8 years"}.get(age_range, age_range)
     
     def to_dict(self):
         """Convert child to dictionary"""
@@ -226,7 +236,7 @@ class Activity(db.Model):
     home_requirements = db.Column(db.Text)     
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
     
     # Helper methods for JSON fields
     def get_materials(self):
@@ -306,7 +316,7 @@ class ActivityCompletion(db.Model):
     child_id = db.Column(db.Integer, db.ForeignKey('children.id'), nullable=True)
     
     # Completion details
-    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, default=utcnow)
     notes = db.Column(db.Text)  # Optional notes from parent
     
     # Rating (1-5 stars, optional)
@@ -362,7 +372,7 @@ class Meal(db.Model):
     is_favorite = db.Column(db.Boolean, default=False)
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
     
     # Helper methods for JSON fields
     def get_ingredients(self):
@@ -410,8 +420,6 @@ class Meal(db.Model):
                 if name:
                     selected_names.add(name)
         
-        print(f"DEBUG: User has these ingredients: {selected_names}")
-        
         # Find missing ingredients (in recipe but NOT in what user selected)
         missing = []
         for ing in all_ingredients:
@@ -424,7 +432,6 @@ class Meal(db.Model):
             # Check if this ingredient is NOT in what user has
             if ing_name and ing_name not in selected_names:
                 missing.append(ing)
-                print(f"DEBUG: Missing ingredient: {ing_name}")
         
         return missing
     
@@ -476,8 +483,8 @@ class ChatConversation(db.Model):
     language = db.Column(db.String(10), default='en')  # 'en' or 'ar'
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow)
     
     # Relationships
     messages = db.relationship('ChatMessage', backref='conversation', cascade='all, delete-orphan', order_by='ChatMessage.created_at')
@@ -512,7 +519,7 @@ class ChatMessage(db.Model):
     message_text = db.Column(db.Text, nullable=False)
     
     # Timestamp
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
     
     def to_dict(self):
         """Convert message to dictionary"""

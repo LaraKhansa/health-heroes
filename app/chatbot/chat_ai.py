@@ -3,12 +3,9 @@ Chat AI Logic
 Handles Gemini AI integration for the chatbot
 """
 
-import google.generativeai as genai
-import os
 from datetime import datetime
 
-# Configure Gemini
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+from app.ai_client import generate_text, chat_message
 
 
 def build_system_prompt(user, family_profile, children):
@@ -93,48 +90,20 @@ def generate_chat_response(user, family_profile, children, conversation_history,
     try:
         # Build the system prompt with family context
         system_prompt = build_system_prompt(user, family_profile, children)
+        if language == 'ar':
+            system_prompt += "\nAlways respond in Arabic.\n"
         
-        # Create the model
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
-        # Build conversation history for context
-        chat_history = []
-        
-        # Add system prompt as first message
-        chat_history.append({
-            "role": "user",
-            "parts": [system_prompt]
-        })
-        chat_history.append({
-            "role": "model",
-            "parts": ["I understand. I'm ready to assist this family with personalized health and parenting advice. I'll stay focused on early childhood topics and respect their cultural context."]
-        })
-        
-        # Add previous conversation messages
+        # Previous messages give the model the conversation context
+        contents = []
         for msg in conversation_history:
             if msg['role'] == 'user':
-                chat_history.append({
-                    "role": "user",
-                    "parts": [msg['message_text']]
-                })
+                contents.append(chat_message('user', msg['message_text']))
             elif msg['role'] == 'assistant':
-                chat_history.append({
-                    "role": "model",
-                    "parts": [msg['message_text']]
-                })
+                contents.append(chat_message('model', msg['message_text']))
         
-        # Start chat with history
-        chat = model.start_chat(history=chat_history)
+        contents.append(chat_message('user', user_message))
         
-        # Add language instruction if Arabic
-        final_message = user_message
-        if language == 'ar':
-            final_message = f"[Please respond in Arabic] {user_message}"
-        
-        # Generate response
-        response = chat.send_message(final_message)
-        
-        return response.text
+        return generate_text(contents, system_instruction=system_prompt)
         
     except Exception as e:
         print(f"Error generating chat response: {e}")
@@ -157,15 +126,12 @@ def generate_conversation_title(first_message, language='en'):
     """
     
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
         if language == 'ar':
             prompt = f"قم بإنشاء عنوان قصير (3-5 كلمات) لمحادثة تبدأ بهذه الرسالة: '{first_message}'. أعط العنوان فقط، بدون علامات تنصيص."
         else:
             prompt = f"Generate a short title (3-5 words) for a conversation starting with this message: '{first_message}'. Give only the title, no quotes."
         
-        response = model.generate_content(prompt)
-        title = response.text.strip().strip('"\'')
+        title = generate_text(prompt).strip('"\'')
         
         # Limit to 50 characters
         if len(title) > 50:

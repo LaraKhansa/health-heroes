@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
-<body>   
+<body>
+    {% include 'header.html' %}
+
     <!-- Main Content -->
     <main class="home-container">
         <!-- Welcome Section -->

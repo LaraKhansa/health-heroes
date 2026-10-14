@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
 from db.models import db, Activity, User, FamilyProfile, Child, ActivityCompletion
-from sqlalchemy import func
+from app.decorators import login_required
 import random
 
 # Create blueprint
@@ -14,19 +14,26 @@ screen_free_bp = Blueprint(
 )
 
 
+def get_family_child(child_id):
+    """Return the logged-in family's child with this id, or None"""
+    try:
+        child_id = int(child_id)
+    except (TypeError, ValueError):
+        return None
+    family_profile = FamilyProfile.query.filter_by(user_id=session.get('user_id')).first()
+    if not family_profile:
+        return None
+    return Child.query.filter_by(id=child_id, family_profile_id=family_profile.id).first()
+
+
 @screen_free_bp.route('/')
+@login_required
 def activities_list():
     """
     Main activities page
     Shows filtered activities based on user preferences
     """
-    # Check if user is logged in
     user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('auth.login'))
-    
-    # Get user and family profile
-    user = User.query.get(user_id)
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
     # Get all children
@@ -53,14 +60,9 @@ def activities_list():
     # Filter by child's age if specified
     selected_child = None
     if child_filter != 'all':
-        try:
-            child_id = int(child_filter)
-            selected_child = Child.query.get(child_id)
-            if selected_child:
-                age_range = selected_child.get_age_range()
-                query = query.filter_by(age_range=age_range)
-        except (ValueError, TypeError):
-            pass
+        selected_child = get_family_child(child_filter)
+        if selected_child:
+            query = query.filter_by(age_range=selected_child.get_activity_age_range())
     
     # Get all matching activities
     all_activities = query.all()
@@ -129,6 +131,7 @@ def activities_list():
 
 
 @screen_free_bp.route('/api/activities')
+@login_required
 def api_get_activities():
     """
     API endpoint to get activities (for "Get New Ideas" button)
@@ -137,7 +140,7 @@ def api_get_activities():
     category_filter = request.args.get('category', 'all')
     child_filter = request.args.get('child', 'all')
     language = request.args.get('lang', 'en')
-    limit = int(request.args.get('limit', 6))
+    limit = min(max(request.args.get('limit', 6, type=int) or 6, 1), 24)
     
     # Base query
     query = Activity.query
@@ -148,15 +151,9 @@ def api_get_activities():
     
     # Filter by child's age if specified
     if child_filter != 'all':
-        try:
-            child_id = int(child_filter)
-            selected_child = Child.query.get(child_id)
-            if selected_child:
-                age_range = selected_child.get_age_range()
-                print(f"DEBUG API: Child {selected_child.name}, Age: {selected_child.get_age()}, Age Range: {age_range}")
-                query = query.filter_by(age_range=age_range)
-        except (ValueError, TypeError):
-            pass  # Invalid child_filter, ignore
+        selected_child = get_family_child(child_filter)
+        if selected_child:
+            query = query.filter_by(age_range=selected_child.get_activity_age_range())
     
     # Get ALL matching activities first
     all_activities = query.all()
@@ -206,19 +203,21 @@ def api_get_activities():
     return jsonify(activities_data)
 
 @screen_free_bp.route('/api/complete', methods=['POST'])
+@login_required
 def api_complete_activity():
     """
     Mark an activity as completed
     """
     user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'success': False, 'error': 'Not logged in'})
     
-    data = request.get_json()
-    activity_id = data.get('activity_id')
+    data = request.get_json(silent=True) or {}
+    try:
+        activity_id = int(data.get('activity_id'))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Missing activity_id'}), 400
     
-    if not activity_id:
-        return jsonify({'success': False, 'error': 'Missing activity_id'})
+    if not db.session.get(Activity, activity_id):
+        return jsonify({'success': False, 'error': 'Activity not found'}), 404
     
     # Check if already completed
     existing = ActivityCompletion.query.filter_by(
@@ -270,6 +269,7 @@ def api_get_stats():
     })
 
 @screen_free_bp.route('/api/activity/<int:activity_id>')
+@login_required
 def api_get_activity(activity_id):
     """
     Get a specific activity by ID
@@ -277,6 +277,6 @@ def api_get_activity(activity_id):
     """
     language = request.args.get('lang', 'en')
     
-    activity = Activity.query.get_or_404(activity_id)
+    activity = db.get_or_404(Activity, activity_id)
     
     return jsonify(activity.to_dict(language=language))

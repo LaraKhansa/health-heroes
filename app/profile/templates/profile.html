@@ -1,0 +1,260 @@
+{% set ar = language == 'ar' %}
+{% set resource_labels = {
+    'kitchen': ('Kitchen Access', 'المطبخ'),
+    'balcony': ('Balcony/Terrace', 'الشرفة'),
+    'garden': ('Garden/Backyard', 'الحديقة'),
+    'living_room': ('Living Room Space', 'غرفة المعيشة'),
+    'outdoor_nearby': ('Nearby Park/Outdoor', 'حديقة قريبة')
+} %}
+{% set interest_labels = {
+    'sports': ('Sports', 'الرياضة'),
+    'arts': ('Arts & Crafts', 'الفنون'),
+    'cooking': ('Cooking', 'الطبخ'),
+    'science': ('Science', 'العلوم'),
+    'reading': ('Reading', 'القراءة'),
+    'outdoor': ('Outdoor Play', 'اللعب في الخارج')
+} %}
+{% set restriction_labels = {
+    'nuts': ('Nuts', 'المكسرات'),
+    'dairy': ('Dairy', 'الألبان'),
+    'gluten': ('Gluten', 'الغلوتين'),
+    'eggs': ('Eggs', 'البيض'),
+    'seafood': ('Seafood', 'المأكولات البحرية')
+} %}
+{% macro label(labels, key) -%}
+    {%- if key in labels -%}{{ labels[key][1] if ar else labels[key][0] }}{%- else -%}{{ key }}{%- endif -%}
+{%- endmacro %}
+<!DOCTYPE html>
+<html lang="{{ 'ar' if ar else 'en' }}" dir="{{ 'rtl' if ar else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'ملف العائلة - عافية' if ar else 'Family Profile -  Afiyah' }}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>⭐</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <link rel="stylesheet" href="{{ url_for('meals.static', filename='css/meals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <style>
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-row:last-child {
+            border-bottom: none;
+        }
+
+        .profile-row-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .profile-row-value {
+            color: #2e7d32;
+            font-weight: 600;
+            text-align: end;
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .chip {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .chip.warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .children-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 15px;
+        }
+
+        .child-card {
+            background: #fafafa;
+            border: 2px solid #e8f5e9;
+            border-radius: 15px;
+            padding: 18px;
+        }
+
+        .child-card h3 {
+            color: #2e7d32;
+            margin-bottom: 4px;
+        }
+
+        .child-card .child-age {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .child-card .chip-list {
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .child-card form {
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            display: inline-block;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-small.primary {
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            color: white;
+        }
+
+        .btn-small.danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh;">
+
+    <script>
+        localStorage.setItem('userLanguage', '{{ language }}');
+    </script>
+
+    {% include 'header.html' %}
+    {% include 'navigation.html' %}
+
+    <div class="meal-container">
+
+        <div class="meal-header">
+            <h1>👨‍👩‍👧 {{ 'ملف العائلة' if ar else 'Family Profile' }}</h1>
+            <p>{{ user.name }} · {{ user.email }}</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages" style="margin-bottom: 20px;">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}" style="padding: 15px; border-radius: 12px; margin-bottom: 10px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Family settings -->
+        <div class="form-section">
+            <div class="section-header-row">
+                <h2 class="section-title"><span>🏠</span><span>{{ 'إعدادات العائلة' if ar else 'Family Settings' }}</span></h2>
+                <a href="{{ url_for('profile.setup') }}" class="btn-small primary">✏️ {{ 'تعديل' if ar else 'Edit' }}</a>
+            </div>
+
+            <div class="profile-row">
+                <span class="profile-row-label">🌍 {{ 'اللغة' if ar else 'Language' }}</span>
+                <span class="profile-row-value">{{ 'العربية' if family_profile.language == 'ar' else 'English' }}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-row-label">🏡 {{ 'المساحات المتاحة' if ar else 'Home spaces' }}</span>
+                <span class="chip-list">
+                    {% for resource in family_profile.get_home_resources() %}
+                        <span class="chip">{{ label(resource_labels, resource) }}</span>
+                    {% else %}
+                        <span class="profile-row-value">{{ 'لم يتم التحديد' if ar else 'None selected' }}</span>
+                    {% endfor %}
+                </span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-row-label">🍽️ {{ 'أوقات الوجبات' if ar else 'Meal times' }}</span>
+                <span class="profile-row-value">
+                    🌅 {{ family_profile.breakfast_time }} · ☀️ {{ family_profile.lunch_time }} · 🌙 {{ family_profile.dinner_time }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Children -->
+        <div class="form-section">
+            <div class="section-header-row">
+                <h2 class="section-title"><span>👶</span><span>{{ 'الأطفال' if ar else 'Children' }}</span></h2>
+                <a href="{{ url_for('profile.add_child') }}" class="btn-small primary">➕ {{ 'إضافة طفل' if ar else 'Add Child' }}</a>
+            </div>
+
+            {% if children %}
+                <div class="children-grid">
+                    {% for child in children %}
+                    {% set age = child.get_age() %}
+                    <div class="child-card">
+                        <h3>{{ '👦' if child.gender == 'male' else '👧' }} {{ child.name }}</h3>
+                        <p class="child-age">
+                            {% if ar %}العمر: {{ age }} {{ 'سنة' if age != 1 else 'سنة واحدة' }}{% else %}{{ age }} year{{ '' if age == 1 else 's' }} old{% endif %}
+                            · {{ child.birthdate.strftime('%d %b %Y') }}
+                        </p>
+
+                        {% if child.get_interests() %}
+                        <div class="chip-list">
+                            {% for interest in child.get_interests() %}
+                                <span class="chip">{{ label(interest_labels, interest) }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if child.get_dietary_restrictions() %}
+                        <div class="chip-list">
+                            {% for restriction in child.get_dietary_restrictions() %}
+                                <span class="chip warning">⚠️ {{ label(restriction_labels, restriction) }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if child.special_needs %}
+                            <p style="color: #666; font-size: 14px;">📝 {{ child.special_needs }}</p>
+                        {% endif %}
+
+                        <form method="POST" action="{{ url_for('profile.delete_child', child_id=child.id) }}"
+                              onsubmit="return confirm({{ (('هل تريد إزالة ' ~ child.name ~ '؟') if ar else ('Remove ' ~ child.name ~ ' from your family profile?')) | tojson | forceescape }});">
+                            <button type="submit" class="btn-small danger">🗑️ {{ 'إزالة' if ar else 'Remove' }}</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-history">
+                    <div class="empty-history-icon">👶</div>
+                    <h3>{{ 'لم تتم إضافة أطفال بعد' if ar else 'No children added yet' }}</h3>
+                    <p>{{ 'أضف أطفالك للحصول على أنشطة ووجبات مخصصة لهم' if ar else 'Add your children to get activities and meals tailored to them' }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

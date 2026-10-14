@@ -4,7 +4,7 @@ Bilingual: Arabic + English
 Cultural Context: UAE/Islamic values
 """
 
-from constants import (
+from utils.constants import (
     HOME_AREAS,
     ACTIVITY_CATEGORIES,
     DURATIONS,
@@ -100,7 +100,7 @@ Provide {num_activities} activities in this EXACT JSON format (no markdown, no e
         "الخطوة 3: تعليمات واضحة",
         "الخطوة 4: تعليمات واضحة",
         "الخطوة 5: تعليمات واضحة"
-      ],
+      ]
     }}
   ]
 }}

@@ -3,10 +3,8 @@ AI Meal Generator
 Handles all AI-related meal generation logic
 """
 
-import os
-import json
-from openai import OpenAI
-from app.meal_recommender.prompts import get_meal_generation_prompt
+from app.ai_client import generate_json
+from app.meal_recommender.prompts import get_meal_generation_prompt, get_meal_regeneration_prompt
 
 
 def generate_meal(selected_ingredients, meal_type, cuisine_type, child_profiles, dietary_restrictions, language='en'):
@@ -28,70 +26,51 @@ def generate_meal(selected_ingredients, meal_type, cuisine_type, child_profiles,
         Exception: if AI generation fails
     """
     
-    try:
-        # Initialize Gemini client
-        client = OpenAI(
-        base_url="https://router.huggingface.co/v1",
-        api_key=os.environ["HF_TOKEN"],
+    # Build the prompt using prompt template
+    prompt = get_meal_generation_prompt(
+        selected_ingredients=selected_ingredients,
+        meal_type=meal_type,
+        cuisine_type=cuisine_type,
+        child_profiles=child_profiles,
+        dietary_restrictions=dietary_restrictions,
+        language=language
     )
+    
+    print(f"🤖 Generating {meal_type} ({cuisine_type}) from {len(selected_ingredients)} ingredients...")
+    
+    meal_data = generate_json(prompt)
+    validate_meal_data(meal_data)
+    
+    print(f"✅ Meal generated successfully: {meal_data['name_en']}")
+    
+    return meal_data
 
-        
-        # Build the prompt using prompt template
-        prompt = get_meal_generation_prompt(
-            selected_ingredients=selected_ingredients,
-            meal_type=meal_type,
-            cuisine_type=cuisine_type,
-            child_profiles=child_profiles,
-            dietary_restrictions=dietary_restrictions,
-            language=language
-        )
-        
-        print(f"🤖 Generating meal with AI...")
-        print(f"   - Meal type: {meal_type}")
-        print(f"   - Cuisine: {cuisine_type}")
-        print(f"   - Ingredients: {len(selected_ingredients)}")
-        print(f"   - Language: {language}")
-        
-        # Call Gemini API
-        completion = client.chat.completions.create(
-        model="openai/gpt-oss-20b:groq",
-        messages=[
-            {
-            "role": "user",
-            "content": prompt
-            }
-        ]
-        )
-        response = completion.choices[0].message.content
-        
-        # Parse response text into JSON
-        meal_data = json.loads(response)
-        
-        # Validate response has required fields
-        required_fields = [
-            'name_en', 'name_ar', 'ingredients', 
-            'instructions_en', 'instructions_ar',
-            'prep_time', 'cook_time',
-            'nutritional_benefits_en', 'nutritional_benefits_ar',
-            'why_healthy_en', 'why_healthy_ar'
-        ]
-        
-        for field in required_fields:
-            if field not in meal_data:
-                raise ValueError(f"Missing required field: {field}")
-        
-        print(f"✅ Meal generated successfully: {meal_data['name_en']}")
-        
-        return meal_data
-        
-    except json.JSONDecodeError as e:
-        print(f"❌ JSON Parse Error: {e}")
-        print(f"Response text: {response.text[:200]}...")
-        raise Exception("Failed to parse AI response. Please try again.")
-        
-    except Exception as e:
-        print(f"❌ AI Generation Error: {e}")
-        raise Exception(f"Failed to generate meal: {str(e)}")
+
+def regenerate_meal(original_meal_data, feedback, dietary_restrictions, language='en'):
+    """
+    Modify an existing meal based on parent feedback
+    
+    Args:
+        original_meal_data: dict with 'name_en' and 'ingredients'
+        feedback: what the parent wants changed
+        dietary_restrictions: list of dietary restrictions
+        language: 'en' or 'ar'
+    
+    Returns:
+        dict with the updated meal data (bilingual)
+    """
+    
+    prompt = get_meal_regeneration_prompt(
+        original_meal=original_meal_data,
+        feedback=feedback,
+        dietary_restrictions=dietary_restrictions,
+        language=language
+    )
+    
+    meal_data = generate_json(prompt, temperature=1.0)
+    validate_meal_data(meal_data)
+    
+    return meal_data
 
 
 def validate_meal_data(meal_data):
@@ -123,7 +102,16 @@ def validate_meal_data(meal_data):
         'why_healthy_ar': str
     }
     
+    if not isinstance(meal_data, dict):
+        raise ValueError("Meal data must be a JSON object")
+    
     for field, expected_type in required_fields.items():
+        # Models sometimes return instructions as a list of steps, or times as numbers
+        if expected_type is str and isinstance(meal_data.get(field), list):
+            meal_data[field] = '\n'.join(str(item) for item in meal_data[field])
+        elif expected_type is str and isinstance(meal_data.get(field), (int, float)):
+            meal_data[field] = str(meal_data[field])
+        
         if field not in meal_data:
             raise ValueError(f"Missing required field: {field}")
         

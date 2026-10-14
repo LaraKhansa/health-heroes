@@ -4,9 +4,9 @@ Handles AI chat assistant for parents
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
-from db.models import db, User, FamilyProfile, Child, ChatConversation, ChatMessage
+from db.models import db, User, FamilyProfile, Child, ChatConversation, ChatMessage, utcnow
+from app.decorators import login_required
 from app.chatbot.chat_ai import generate_chat_response, generate_conversation_title
-from datetime import datetime
 
 # Create blueprint
 chatbot_bp = Blueprint(
@@ -19,18 +19,6 @@ chatbot_bp = Blueprint(
 )
 
 
-def login_required(f):
-    """Decorator to require login"""
-    from functools import wraps
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to access this page', 'error')
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-
 @chatbot_bp.route('/')
 @login_required
 def chat_home():
@@ -38,7 +26,6 @@ def chat_home():
     Main chat page
     """
     user_id = session.get('user_id')
-    user = User.query.get(user_id)
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
     # Get user name for display
@@ -115,7 +102,7 @@ def create_conversation():
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     language = data.get('language', family_profile.language if family_profile else 'en')
     
     # Create new conversation
@@ -141,17 +128,20 @@ def send_message():
     Send a message and get AI response
     """
     user_id = session.get('user_id')
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     children = Child.query.filter_by(family_profile_id=family_profile.id).all() if family_profile else []
     
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     conversation_id = data.get('conversation_id')
     user_message = data.get('message')
+    if not isinstance(user_message, str):
+        user_message = ''
+    user_message = user_message.strip()[:4000]
     language = data.get('language', 'en')
     
     # Validate
-    if not user_message or not user_message.strip():
+    if not user_message:
         return jsonify({
             'success': False,
             'error': 'Message is required'
@@ -182,7 +172,7 @@ def send_message():
     user_msg = ChatMessage(
         conversation_id=conversation.id,
         role='user',
-        message_text=user_message.strip()
+        message_text=user_message
     )
     db.session.add(user_msg)
 
@@ -209,11 +199,10 @@ def send_message():
         db.session.add(ai_msg)
         
         # Update conversation timestamp
-        conversation.updated_at = datetime.utcnow()
+        conversation.updated_at = utcnow()
         
-        # Auto-generate title after 4 messages 
-        message_count = len(conversation.messages) + 2  
-        if message_count == 4:
+        # Name the conversation after its first message
+        if is_first_message:
             conversation.title = generate_conversation_title(user_message, language)
             
         db.session.commit()
@@ -242,8 +231,8 @@ def update_conversation_title(conversation_id):
     """
     user_id = session.get('user_id')
     
-    data = request.get_json()
-    new_title = data.get('title', '').strip()
+    data = request.get_json(silent=True) or {}
+    new_title = str(data.get('title') or '').strip()
     
     if not new_title:
         return jsonify({

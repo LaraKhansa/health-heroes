@@ -1,0 +1,182 @@
+{% set ar = language == 'ar' %}
+<!DOCTYPE html>
+<html lang="{{ 'ar' if ar else 'en' }}" dir="{{ 'rtl' if ar else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'سجل الوجبات - عافية' if ar else 'Meal History -  Afiyah' }}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>⭐</text></svg>">
+    <!-- Base styles from activities -->
+    <link rel="stylesheet" href="{{ url_for('screen_free.static', filename='css/activities.css') }}">
+    <!-- Meal recommender specific styles -->
+    <link rel="stylesheet" href="{{ url_for('meals.static', filename='css/meals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified_header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <style>
+        .history-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .history-filter-btn {
+            border: 2px solid #66bb6a;
+            background: white;
+            color: #2e7d32;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .history-filter-btn.active {
+            background: #66bb6a;
+            color: white;
+        }
+
+        .history-card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .history-card-actions button {
+            border: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .favorite-star {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body style="background: rgb(201, 232, 195); min-height: 100vh;">
+
+    <script>
+        localStorage.setItem('userLanguage', '{{ language }}');
+    </script>
+
+    <!-- Header -->
+    {% include 'header.html' %}
+    {% include 'navigation.html' %}
+
+    <div class="meal-container">
+
+        <div class="meal-header">
+            <h1>📖 {{ 'سجل الوجبات' if ar else 'Meal History' }}</h1>
+            <p>{{ 'جميع الوجبات التي أنشأتها لعائلتك' if ar else 'All the meals you have created for your family' }}</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages" style="margin-bottom: 20px;">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}" style="padding: 15px; border-radius: 12px; margin-bottom: 10px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if meals %}
+            <div class="history-filters">
+                <button type="button" class="history-filter-btn active" data-filter="all">{{ 'الكل' if ar else 'All' }}</button>
+                <button type="button" class="history-filter-btn" data-filter="favorites">❤️ {{ 'المفضلة' if ar else 'Favorites' }}</button>
+            </div>
+
+            <div class="history-grid">
+                {% for meal in meals %}
+                {% set type_info = meal_types.get(meal.meal_type, {}) %}
+                <div class="history-card" data-meal-id="{{ meal.id }}" data-favorite="{{ 'true' if meal.is_favorite else 'false' }}"
+                     onclick="window.location.href='{{ url_for('meals.view_meal', meal_id=meal.id, lang=language) }}'">
+                    <div class="history-card-header">
+                        <span class="meal-type-badge meal-type-{{ meal.meal_type }}">
+                            {{ type_info.get('icon', '') }} {{ type_info.get('ar' if ar else 'en', meal.meal_type) }}
+                        </span>
+                        <button type="button" class="favorite-star" title="{{ 'المفضلة' if ar else 'Favorite' }}"
+                                onclick="event.stopPropagation(); toggleFavorite({{ meal.id }}, this)">{{ '❤️' if meal.is_favorite else '🤍' }}</button>
+                    </div>
+                    <h3>{{ meal.name_ar if ar else meal.name_en }}</h3>
+                    <p class="history-card-date">{{ meal.created_at.strftime('%d %b %Y') if meal.created_at else '' }}</p>
+                    <div class="history-card-meta">
+                        {% if meal.prep_time %}<span>⏱️ {{ meal.prep_time }}</span>{% endif %}
+                        {% if meal.cook_time %}<span>🔥 {{ meal.cook_time }}</span>{% endif %}
+                        <span>🥗 {{ meal.get_ingredients() | length }} {{ 'مكونات' if ar else 'ingredients' }}</span>
+                    </div>
+                    <div class="history-card-actions">
+                        <button type="button" onclick="event.stopPropagation(); deleteMeal({{ meal.id }})">🗑️ {{ 'حذف' if ar else 'Delete' }}</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-history">
+                <div class="empty-history-icon">🍽️</div>
+                <h3>{{ 'لا توجد وجبات بعد' if ar else 'No meals yet' }}</h3>
+                <p>{{ 'أنشئ وجبتك الصحية الأولى لعائلتك!' if ar else 'Create your first healthy meal for your family!' }}</p>
+            </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('meals.meals_home', lang=language) }}" class="btn-action btn-generate-new" style="display: inline-flex; text-decoration: none;">
+                <span>🎨</span>
+                <span>{{ 'إنشاء وجبة جديدة' if ar else 'Generate New Meal' }}</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const messages = {
+            deleteConfirm: {{ ('هل تريد حذف هذه الوجبة؟' if ar else 'Delete this meal?') | tojson }},
+            error: {{ ('حدث خطأ. الرجاء المحاولة مرة أخرى.' if ar else 'Something went wrong. Please try again.') | tojson }}
+        };
+
+        function toggleFavorite(mealId, button) {
+            fetch(`/meals/favorite/${mealId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) throw new Error(data.error);
+                    button.textContent = data.is_favorite ? '❤️' : '🤍';
+                    button.closest('.history-card').dataset.favorite = data.is_favorite ? 'true' : 'false';
+                })
+                .catch(() => alert(messages.error));
+        }
+
+        function deleteMeal(mealId) {
+            if (!confirm(messages.deleteConfirm)) return;
+            fetch(`/meals/delete/${mealId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) throw new Error(data.error);
+                    const card = document.querySelector(`.history-card[data-meal-id="${mealId}"]`);
+                    if (card) card.remove();
+                    if (!document.querySelector('.history-card')) location.reload();
+                })
+                .catch(() => alert(messages.error));
+        }
+
+        document.querySelectorAll('.history-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.history-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const onlyFavorites = btn.dataset.filter === 'favorites';
+                document.querySelectorAll('.history-card').forEach(card => {
+                    card.style.display = (!onlyFavorites || card.dataset.favorite === 'true') ? '' : 'none';
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -4,8 +4,9 @@ Handles family profile setup and management
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from db.models import db, User, FamilyProfile, Child
-from datetime import datetime
+from db.models import db, User, FamilyProfile, Child, ActivityCompletion
+from app.decorators import login_required
+from datetime import date, datetime
 
 # Create blueprint
 profile_bp = Blueprint(
@@ -18,16 +19,14 @@ profile_bp = Blueprint(
 )
 
 
-def login_required(f):
-    """Decorator to require login"""
-    from functools import wraps
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to access this page', 'error')
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
+def get_or_create_family_profile(user_id):
+    """Every user should have a family profile; create one if it is missing"""
+    family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
+    if not family_profile:
+        family_profile = FamilyProfile(user_id=user_id)
+        db.session.add(family_profile)
+        db.session.commit()
+    return family_profile
 
 
 @profile_bp.route('/setup', methods=['GET', 'POST'])
@@ -37,13 +36,15 @@ def setup():
     Initial family profile setup (one-time wizard)
     """
     user_id = session.get('user_id')
-    user = User.query.get(user_id)
-    family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
+    user = db.session.get(User, user_id)
+    family_profile = get_or_create_family_profile(user_id)
     
     if request.method == 'POST':
         # Get form data
         home_resources = request.form.getlist('home_resources')
         language = request.form.get('language', 'en')
+        if language not in ('en', 'ar'):
+            language = 'en'
         breakfast_time = request.form.get('breakfast_time', '07:00')
         lunch_time = request.form.get('lunch_time', '13:00')
         dinner_time = request.form.get('dinner_time', '19:00')
@@ -60,7 +61,11 @@ def setup():
         # Update session language
         session['language'] = language
         
-        flash('Family profile setup complete!', 'success')
+        flash('Family profile saved!', 'success')
+        
+        # First-time setup continues to adding children; later edits go back to the profile
+        if family_profile.children:
+            return redirect(url_for('profile.view_profile'))
         return redirect(url_for('profile.add_child'))
     
     return render_template('setup.html', user=user, family_profile=family_profile)
@@ -73,11 +78,11 @@ def add_child():
     Add a child to the family
     """
     user_id = session.get('user_id')
-    family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
+    family_profile = get_or_create_family_profile(user_id)
     
     if request.method == 'POST':
         # Get form data
-        name = request.form.get('name')
+        name = (request.form.get('name') or '').strip()[:100]
         birthdate_str = request.form.get('birthdate')
         gender = request.form.get('gender')
         interests = request.form.getlist('interests')
@@ -101,6 +106,10 @@ def add_child():
             birthdate = datetime.strptime(birthdate_str, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid birthdate format', 'error')
+            return render_template('add_child.html', family_profile=family_profile)
+        
+        if birthdate > date.today():
+            flash('Birthdate cannot be in the future', 'error')
             return render_template('add_child.html', family_profile=family_profile)
         
         # Create child
@@ -137,8 +146,36 @@ def view_profile():
     View and manage family profile
     """
     user_id = session.get('user_id')
-    user = User.query.get(user_id)
-    family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
-    children = Child.query.filter_by(family_profile_id=family_profile.id).all()
+    user = db.session.get(User, user_id)
+    family_profile = get_or_create_family_profile(user_id)
+    children = Child.query.filter_by(family_profile_id=family_profile.id).order_by(Child.birthdate).all()
+    language = request.args.get('lang', family_profile.language or 'en')
     
-    return render_template('profile.html', user=user, family_profile=family_profile, children=children)
+    return render_template(
+        'profile.html',
+        user=user,
+        user_name=session.get('user_name', 'User'),
+        family_profile=family_profile,
+        children=children,
+        language=language
+    )
+
+
+@profile_bp.route('/child/<int:child_id>/delete', methods=['POST'])
+@login_required
+def delete_child(child_id):
+    """
+    Remove a child from the family
+    """
+    user_id = session.get('user_id')
+    family_profile = get_or_create_family_profile(user_id)
+    child = Child.query.filter_by(id=child_id, family_profile_id=family_profile.id).first_or_404()
+    
+    # Keep the family's completed activities, just unlink them from this child
+    ActivityCompletion.query.filter_by(child_id=child.id).update({'child_id': None})
+    
+    db.session.delete(child)
+    db.session.commit()
+    
+    flash(f'{child.name} was removed from your family profile', 'success')
+    return redirect(url_for('profile.view_profile'))

@@ -3,9 +3,9 @@ Dashboard Helper Functions
 Functions to retrieve accurate family-specific data for the dashboard
 """
 
-from db.models import db, ActivityCompletion, Meal, FamilyProfile
-from sqlalchemy import func, distinct
-from datetime import datetime, timedelta
+from db.models import db, ActivityCompletion, Meal, FamilyProfile, utcnow
+from sqlalchemy import func
+from datetime import timedelta
 
 
 def get_family_screen_free_activities_count(user_id):
@@ -58,7 +58,7 @@ def get_family_streak_days(user_id):
         int: Number of unique days with activities in the last 7 days
     """
     # Calculate date 7 days ago
-    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    seven_days_ago = utcnow() - timedelta(days=7)
     
     # Count distinct dates where activities were completed
     count = db.session.query(
@@ -82,7 +82,7 @@ def get_family_weekly_data(user_id):
         dict: Dictionary with weekday names as keys and counts as values
     """
     # Calculate date 7 days ago
-    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    seven_days_ago = utcnow() - timedelta(days=7)
     
     # Query activities grouped by weekday
     results = db.session.query(
@@ -118,7 +118,7 @@ def get_family_monthly_data(user_id):
         dict: Dictionary with week labels as keys and counts as values
     """
     # Get current month/year
-    now = datetime.utcnow()
+    now = utcnow()
     current_month = now.month
     current_year = now.year
     

@@ -4,22 +4,23 @@ Uses Gemini AI to generate bilingual (Arabic/English) activities
 Cultural context: UAE/Islamic values
 """
 
-from google import genai
-from google.genai import types
 import os
-import json
-from dotenv import load_dotenv
+import sys
 import time
 
-from constants import HOME_AREAS, ACTIVITY_CATEGORIES, AGE_RANGES
-from prompts import get_batch_activity_generation_prompt
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from dotenv import load_dotenv
+
+from app.ai_client import generate_json
+from utils.constants import HOME_AREAS, ACTIVITY_CATEGORIES, AGE_RANGES
+from utils.prompts import get_batch_activity_generation_prompt
 
 # Load environment variables
 load_dotenv()
 
-# Configure Gemini
-client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-
+# A stronger model gives better activities; this only runs once when seeding
+ACTIVITY_MODEL = os.getenv('ACTIVITY_MODEL', 'gemini-2.5-pro')
 
 
 def generate_activities_batch(home_area, category, age_range, num_activities, retry_count=0):
@@ -41,30 +42,11 @@ def generate_activities_batch(home_area, category, age_range, num_activities, re
     
     try:
         # Generate content with Gemini
-        print("Generating {num_activities} activities...")
-        response = client.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=prompt,
-            config = types.GenerateContentConfig(temperature=1.8)
-        )
-        result_text = response.text.strip()
-        
-        # Clean up markdown code blocks if present
-        if result_text.startswith('```json'):
-            result_text = result_text[7:]
-        elif result_text.startswith('```'):
-            result_text = result_text[3:]
-        
-        if result_text.endswith('```'):
-            result_text = result_text[:-3]
-        
-        result_text = result_text.strip()
-        
-        # Parse JSON
-        data = json.loads(result_text)
+        print(f"Generating {num_activities} activities...")
+        data = generate_json(prompt, temperature=1.0, model=ACTIVITY_MODEL)
         
         # Validate structure
-        if 'activities' not in data:
+        if not isinstance(data, dict) or 'activities' not in data:
             raise ValueError("Missing 'activities' array in response")
         
         activities_list = data['activities']
@@ -99,18 +81,6 @@ def generate_activities_batch(home_area, category, age_range, num_activities, re
             raise ValueError("No valid activities generated")
         
         return valid_activities
-        
-    except json.JSONDecodeError as e:
-        print(f"  ❌ JSON Error: {e}")
-        print(f"  Response preview: {result_text[:300]}...")
-        
-        # Retry logic
-        if retry_count < 2:
-            print(f"  🔄 Retrying... (attempt {retry_count + 1})")
-            time.sleep(3)
-            return generate_activities_batch(home_area, category, age_range, num_activities, retry_count + 1)
-        
-        return []
         
     except Exception as e:
         print(f"  ❌ Generation Error: {e}")

@@ -313,6 +313,7 @@
         {% endwith %}
         
         <!-- Setup Form -->
+        {% set saved_resources = family_profile.get_home_resources() if family_profile else [] %}
         <form method="POST" action="{{ url_for('profile.setup') }}" id="setupForm">
             
             <!-- Language Preference Section - MOVED TO TOP -->
@@ -335,23 +336,23 @@
                 
                 <div class="checkbox-grid">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="kitchen" name="home_resources" value="kitchen">
+                        <input type="checkbox" id="kitchen" name="home_resources" value="kitchen"{% if 'kitchen' in saved_resources %} checked{% endif %}>
                         <label for="kitchen" data-en="Kitchen Access" data-ar="المطبخ">Kitchen Access</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="balcony" name="home_resources" value="balcony">
+                        <input type="checkbox" id="balcony" name="home_resources" value="balcony"{% if 'balcony' in saved_resources %} checked{% endif %}>
                         <label for="balcony" data-en="Balcony/Terrace" data-ar="الشرفة">Balcony/Terrace</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="garden" name="home_resources" value="garden">
+                        <input type="checkbox" id="garden" name="home_resources" value="garden"{% if 'garden' in saved_resources %} checked{% endif %}>
                         <label for="garden" data-en="Garden/Backyard" data-ar="الحديقة">Garden/Backyard</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="living_room" name="home_resources" value="living_room">
+                        <input type="checkbox" id="living_room" name="home_resources" value="living_room"{% if 'living_room' in saved_resources %} checked{% endif %}>
                         <label for="living_room" data-en="Living Room Space" data-ar="غرفة المعيشة">Living Room Space</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="outdoor_nearby" name="home_resources" value="outdoor_nearby">
+                        <input type="checkbox" id="outdoor_nearby" name="home_resources" value="outdoor_nearby"{% if 'outdoor_nearby' in saved_resources %} checked{% endif %}>
                         <label for="outdoor_nearby" data-en="Nearby Park/Outdoor" data-ar="حديقة قريبة">Nearby Park/Outdoor</label>
                     </div>
                 </div>
@@ -365,15 +366,15 @@
                 <div class="time-inputs">
                     <div class="time-group">
                         <label for="breakfast_time" id="breakfastLabel">Breakfast</label>
-                        <input type="time" id="breakfast_time" name="breakfast_time" value="07:00">
+                        <input type="time" id="breakfast_time" name="breakfast_time" value="{{ family_profile.breakfast_time if family_profile and family_profile.breakfast_time else '07:00' }}">
                     </div>
                     <div class="time-group">
                         <label for="lunch_time" id="lunchLabel">Lunch</label>
-                        <input type="time" id="lunch_time" name="lunch_time" value="13:00">
+                        <input type="time" id="lunch_time" name="lunch_time" value="{{ family_profile.lunch_time if family_profile and family_profile.lunch_time else '13:00' }}">
                     </div>
                     <div class="time-group">
                         <label for="dinner_time" id="dinnerLabel">Dinner</label>
-                        <input type="time" id="dinner_time" name="dinner_time" value="19:00">
+                        <input type="time" id="dinner_time" name="dinner_time" value="{{ family_profile.dinner_time if family_profile and family_profile.dinner_time else '19:00' }}">
                     </div>
                 </div>
             </div>
@@ -385,7 +386,7 @@
     
     <script>
         // Get saved language or default to English
-        let currentLanguage = localStorage.getItem('userLanguage') || 'en';
+        let currentLanguage = localStorage.getItem('userLanguage') || {{ (family_profile.language if family_profile and family_profile.language else 'en') | tojson }};
         
         // Set language selector
         document.getElementById('languageSelect').value = currentLanguage;

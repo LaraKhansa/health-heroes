@@ -5,8 +5,11 @@ Handles meal recommendation and generation
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from db.models import db, User, FamilyProfile, Child, Meal
+from app.decorators import login_required
 from app.meal_recommender.constants import INGREDIENTS, MEAL_TYPES
 from app.meal_recommender.meal_generator import generate_meal, extract_ingredients
+from app.meal_recommender.meal_generator import regenerate_meal as ai_regenerate_meal
+from app.ai_client import AIUnavailableError
 
 # Create blueprint
 meals_bp = Blueprint(
@@ -19,18 +22,6 @@ meals_bp = Blueprint(
 )
 
 
-def login_required(f):
-    """Decorator to require login"""
-    from functools import wraps
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to access this page', 'error')
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-
 @meals_bp.route('/')
 @login_required
 def meals_home():
@@ -38,7 +29,6 @@ def meals_home():
     Main meals page - shows form to generate meals
     """
     user_id = session.get('user_id')
-    user = User.query.get(user_id)
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
     # Get user name for display
@@ -79,7 +69,7 @@ def generate_meal_route():
     selected_ingredients = request.form.getlist('ingredients')
     custom_ingredient = request.form.get('custom_ingredient', '').strip()
     meal_type = request.form.get('meal_type')
-    cuisine_type = request.form.get('cuisine_type', 'arabic')  # NEW: Get cuisine type
+    cuisine_type = request.form.get('cuisine_type', 'arabic')
     language = request.form.get('language', 'en')
     
     # Validation
@@ -113,7 +103,7 @@ def generate_meal_route():
         meal_data = generate_meal(
             selected_ingredients=all_selected,
             meal_type=meal_type,
-            cuisine_type=cuisine_type,  # NEW: Pass cuisine type
+            cuisine_type=cuisine_type,
             child_profiles=child_profiles,
             dietary_restrictions=all_dietary_restrictions,
             language=language
@@ -136,7 +126,13 @@ def generate_meal_route():
         # Redirect to view the meal
         return redirect(url_for('meals.view_meal', meal_id=meal.id, lang=language))
         
+    except AIUnavailableError as e:
+        print(f"❌ Error generating meal: {e}")
+        flash('AI features are not configured yet. Ask the site admin to set GEMINI_API_KEY.', 'error')
+        return redirect(url_for('meals.meals_home', lang=language))
+    
     except Exception as e:
+        db.session.rollback()
         print(f"❌ Error generating meal: {e}")
         if language == 'ar':
             flash('فشل في إنشاء الوجبة. الرجاء المحاولة مرة أخرى.', 'error')
@@ -154,11 +150,11 @@ def view_meal(meal_id):
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    meal = Meal.query.get_or_404(meal_id)
+    meal = db.get_or_404(Meal, meal_id)
     
     # Check if meal belongs to user
-    if meal.family_profile_id != family_profile.id:
-        if family_profile.language == 'ar':
+    if not family_profile or meal.family_profile_id != family_profile.id:
+        if family_profile and family_profile.language == 'ar':
             flash('تم رفض الوصول', 'error')
         else:
             flash('Access denied', 'error')
@@ -183,52 +179,32 @@ def regenerate_meal(meal_id):
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    original_meal = Meal.query.get_or_404(meal_id)
+    original_meal = db.get_or_404(Meal, meal_id)
     
     # Check if meal belongs to user
-    if original_meal.family_profile_id != family_profile.id:
-        return jsonify({'success': False, 'error': 'Access denied'})
+    if not family_profile or original_meal.family_profile_id != family_profile.id:
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     # Get feedback from request
-    data = request.get_json()
-    feedback = data.get('feedback', '').strip()
+    data = request.get_json(silent=True) or {}
+    feedback = str(data.get('feedback') or '').strip()[:1000]
     language = data.get('language', 'en')
     
     if not feedback:
-        return jsonify({'success': False, 'error': 'Feedback is required'})
+        return jsonify({'success': False, 'error': 'Feedback is required'}), 400
     
     try:
-        # Use the regeneration prompt
-        from app.meal_recommender.prompts import get_meal_regeneration_prompt
-        from google import genai
-        from google.genai import types
-        import os
-        import json
-        
-        client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-        
-        # Get original meal data
         original_meal_data = {
             'name_en': original_meal.name_en,
             'ingredients': original_meal.get_ingredients()
         }
         
-        prompt = get_meal_regeneration_prompt(
-            original_meal=original_meal_data,
+        meal_data = ai_regenerate_meal(
+            original_meal_data=original_meal_data,
             feedback=feedback,
+            dietary_restrictions=get_all_dietary_restrictions(family_profile),
             language=language
         )
-        
-        response = client.models.generate_content(
-            model='gemini-2.0-flash-exp',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=1.0,
-                response_mime_type="application/json"
-            )
-        )
-        
-        meal_data = json.loads(response.text)
         
         # Update the existing meal instead of creating new one
         original_meal.name_en = meal_data['name_en']
@@ -254,9 +230,17 @@ def regenerate_meal(meal_id):
         
         return jsonify({'success': True, 'message': 'Meal regenerated successfully!'})
         
-    except Exception as e:
+    except AIUnavailableError as e:
         print(f"Error regenerating meal: {e}")
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'error': 'AI features are not configured on this server'}), 503
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error regenerating meal: {e}")
+        if language == 'ar':
+            error = 'فشل في تعديل الوصفة. الرجاء المحاولة مرة أخرى.'
+        else:
+            error = 'Failed to modify the recipe. Please try again.'
+        return jsonify({'success': False, 'error': error}), 500
 
 @meals_bp.route('/history')
 @login_required
@@ -267,7 +251,10 @@ def meal_history():
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    language = request.args.get('lang', family_profile.language if family_profile else 'en')
+    if not family_profile:
+        return redirect(url_for('profile.setup'))
+    
+    language = request.args.get('lang', family_profile.language)
     user_name = session.get('user_name', 'User')
     
     # Get all meals for this family, ordered by newest first
@@ -293,11 +280,11 @@ def toggle_favorite(meal_id):
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    meal = Meal.query.get_or_404(meal_id)
+    meal = db.get_or_404(Meal, meal_id)
     
     # Check if meal belongs to user
-    if meal.family_profile_id != family_profile.id:
-        return jsonify({'success': False, 'error': 'Access denied'})
+    if not family_profile or meal.family_profile_id != family_profile.id:
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     # Toggle favorite
     meal.is_favorite = not meal.is_favorite
@@ -315,11 +302,11 @@ def delete_meal(meal_id):
     user_id = session.get('user_id')
     family_profile = FamilyProfile.query.filter_by(user_id=user_id).first()
     
-    meal = Meal.query.get_or_404(meal_id)
+    meal = db.get_or_404(Meal, meal_id)
     
     # Check if meal belongs to user
-    if meal.family_profile_id != family_profile.id:
-        return jsonify({'success': False, 'error': 'Access denied'})
+    if not family_profile or meal.family_profile_id != family_profile.id:
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
         db.session.delete(meal)
@@ -328,7 +315,7 @@ def delete_meal(meal_id):
     except Exception as e:
         db.session.rollback()
         print(f"Error deleting meal: {e}")
-        return jsonify({'success': False, 'error': 'Failed to delete meal'})
+        return jsonify({'success': False, 'error': 'Failed to delete meal'}), 500
 
 
 # ============================================

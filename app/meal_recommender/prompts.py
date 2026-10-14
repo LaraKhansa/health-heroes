@@ -56,6 +56,39 @@ def format_dietary_restrictions(dietary_restrictions):
     return '\n'.join([f"- {restriction}" for restriction in dietary_restrictions])
 
 
+MEAL_JSON_FORMAT = """OUTPUT FORMAT (STRICT JSON):
+{
+    "name_en": "Appealing recipe name in English (max 50 chars)",
+    "name_ar": "اسم الوصفة بالعربية (max 50 chars)",
+    "ingredients": [
+        {
+            "name_en": "ingredient name",
+            "name_ar": "اسم المكون",
+            "amount": "quantity with unit (e.g., 2 cups, 100g)",
+            "icon": "relevant emoji"
+        }
+    ],
+    "instructions_en": "Step 1: Say Bismillah and [instruction]\\nStep 2: [instruction]\\nStep 3: [instruction]\\n...",
+    "instructions_ar": "الخطوة 1: قل بسم الله و[التعليمات]\\nالخطوة 2: [التعليمات]\\nالخطوة 3: [التعليمات]\\n...",
+    "prep_time": "X minutes",
+    "cook_time": "Y minutes",
+    "nutritional_benefits_en": "Brief explanation of key nutrients and health benefits (2-3 sentences)",
+    "nutritional_benefits_ar": "شرح موجز للعناصر الغذائية الرئيسية والفوائد الصحية (2-3 جمل)",
+    "why_healthy_en": "Parent-friendly explanation of why this meal is specifically good for children's growth and development (2-3 sentences)",
+    "why_healthy_ar": "شرح للوالدين عن سبب فائدة هذه الوجبة لنمو الأطفال وتطورهم (2-3 جمل)"
+}
+
+IMPORTANT:
+- Output ONLY valid JSON
+- No markdown formatting
+- No code blocks
+- No extra text
+- Arabic text must be natural and fluent (not machine-translated)
+- All fields are required
+- Instructions must be numbered and clear
+"""
+
+
 def get_meal_generation_prompt(selected_ingredients, meal_type, cuisine_type, child_profiles, dietary_restrictions, language='en'):
     """
     Generate prompt for meal creation
@@ -138,74 +171,51 @@ CRITICAL UAE/ISLAMIC CULTURAL REQUIREMENTS:
 - Emphasize fresh, wholesome ingredients
 
 RECIPE REQUIREMENTS:
-- Une the true known recipe name 
+- Use the true, well-known recipe name 
 - Clear, simple steps
 - Realistic prep and cook times
 - Explain nutritional benefits in parent-friendly language
 - Explain why this is specifically healthy for children
 
-OUTPUT FORMAT (STRICT JSON):
-{{
-    "name_en": "Appealing recipe name in English (max 50 chars)",
-    "name_ar": "اسم الوصفة بالعربية (max 50 chars)",
-    "ingredients": [
-        {{
-            "name_en": "ingredient name",
-            "name_ar": "اسم المكون",
-            "amount": "quantity with unit (e.g., 2 cups, 100g)",
-            "icon": "relevant emoji"
-        }}
-    ],
-    "instructions_en": "Step 1: Say Bismillah and [instruction]\\nStep 2: [instruction]\\nStep 3: [instruction]\\n...",
-    "instructions_ar": "الخطوة 1: قل بسم الله و[التعليمات]\\nالخطوة 2: [التعليمات]\\nالخطوة 3: [التعليمات]\\n...",
-    "prep_time": "X minutes",
-    "cook_time": "Y minutes",
-    "nutritional_benefits_en": "Brief explanation of key nutrients and health benefits (2-3 sentences)",
-    "nutritional_benefits_ar": "شرح موجز للعناصر الغذائية الرئيسية والفوائد الصحية (2-3 جمل)",
-    "why_healthy_en": "Parent-friendly explanation of why this meal is specifically good for children's growth and development (2-3 sentences)",
-    "why_healthy_ar": "شرح للوالدين عن سبب فائدة هذه الوجبة لنمو الأطفال وتطورهم (2-3 جمل)"
-}}
-
-IMPORTANT:
-- Output ONLY valid JSON
-- No markdown formatting
-- No code blocks
-- No extra text
-- Arabic text must be natural and fluent (not machine-translated)
-- All fields are required
-- Instructions must be numbered and clear
-"""
+{MEAL_JSON_FORMAT}"""
     
     return prompt
 
-def get_meal_regeneration_prompt(original_meal, feedback, language='en'):
+def get_meal_regeneration_prompt(original_meal, feedback, dietary_restrictions=None, language='en'):
     """
     Generate prompt for regenerating/modifying a meal based on user feedback
     
     Args:
         original_meal: original meal data dict
         feedback: user's feedback/requested changes
+        dietary_restrictions: list of dietary restrictions to keep avoiding
         language: 'en' or 'ar'
     
     Returns:
         prompt string
     """
     
+    restrictions_text = format_dietary_restrictions(dietary_restrictions or [])
+    
     prompt = f"""
+You are a professional nutrition expert and chef specializing in healthy, child-friendly meals for families in the UAE.
+
 You previously created this meal recipe:
 Name: {original_meal.get('name_en')}
-Ingredients: {', '.join([ing['name_en'] for ing in original_meal.get('ingredients', [])])}
+Ingredients: {', '.join([ing.get('name_en', '') for ing in original_meal.get('ingredients', [])])}
 
-The user has provided this feedback:
+The parent has provided this feedback:
 "{feedback}"
+
+DIETARY RESTRICTIONS (MUST AVOID):
+{restrictions_text}
 
 Please modify the recipe based on this feedback while:
 1. Keeping the same general concept
 2. Maintaining nutritional value
-3. Respecting all original dietary restrictions
-4. Staying culturally appropriate for UAE families
+3. Respecting all dietary restrictions above
+4. Staying culturally appropriate for UAE families (Halal ingredients only)
 
-Provide the updated recipe in the same JSON format as before.
-"""
+{MEAL_JSON_FORMAT}"""
     
     return prompt

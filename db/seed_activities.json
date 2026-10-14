@@ -1,0 +1,704 @@
+[
+  {
+    "title_en": "Balloon Keep-Up",
+    "title_ar": "لا تدع البالون يسقط",
+    "description_en": "Tap a balloon into the air together and try not to let it touch the floor.",
+    "description_ar": "اضربوا البالون معاً إلى الأعلى وحاولوا ألا يلمس الأرض.",
+    "age_range": "2-3 years",
+    "duration": "10-15 min",
+    "category": "games",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Balloon", "name_ar": "بالون", "icon": "🎈"},
+      {"name_en": "Open floor space", "name_ar": "مساحة فارغة", "icon": "🏠"}
+    ],
+    "steps_en": [
+      "Clear a safe space and move breakable items away.",
+      "Blow up the balloon and tie it (keep un-inflated balloons away from little ones).",
+      "Show your child how to tap the balloon upward with open hands.",
+      "Count out loud together each time you tap it.",
+      "Try tapping with elbows, knees or heads for extra fun!"
+    ],
+    "steps_ar": [
+      "أفرغوا مساحة آمنة وأبعدوا الأغراض القابلة للكسر.",
+      "انفخوا البالون واربطوه (أبعدوا البالونات غير المنفوخة عن الصغار).",
+      "علّموا طفلكم كيف يضرب البالون إلى الأعلى بكفّيه.",
+      "عدّوا بصوت عالٍ معاً في كل مرة تضربون فيها البالون.",
+      "جرّبوا ضربه بالكوع أو الركبة أو الرأس لمزيد من المرح!"
+    ]
+  },
+  {
+    "title_en": "Animal Walk Race",
+    "title_ar": "سباق مشية الحيوانات",
+    "description_en": "Move across the room like camels, frogs and crabs in a giggly family race.",
+    "description_ar": "تحركوا في الغرفة مثل الجمل والضفدع والسلطعون في سباق عائلي مضحك.",
+    "age_range": "3-5 years",
+    "duration": "10-15 min",
+    "category": "games",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Masking tape or cushions for start and finish lines", "name_ar": "شريط لاصق أو وسائد لخط البداية والنهاية", "icon": "📏"},
+      {"name_en": "Animal picture cards (optional)", "name_ar": "بطاقات صور حيوانات (اختياري)", "icon": "🐪"}
+    ],
+    "steps_en": [
+      "Mark a start line and a finish line across the room.",
+      "Choose an animal together: camel, frog, crab, bear or falcon.",
+      "Everyone races to the finish line moving like that animal.",
+      "Take turns choosing the next animal.",
+      "Finish with a slow 'sleepy cat' stretch to calm down."
+    ],
+    "steps_ar": [
+      "حددوا خط البداية وخط النهاية في الغرفة.",
+      "اختاروا حيواناً معاً: جمل، ضفدع، سلطعون، دب أو صقر.",
+      "يتسابق الجميع إلى خط النهاية بمشية ذلك الحيوان.",
+      "تناوبوا على اختيار الحيوان التالي.",
+      "اختموا بتمدد بطيء مثل القطة النعسانة لتهدأ الأجسام."
+    ]
+  },
+  {
+    "title_en": "Number Hopscotch",
+    "title_ar": "لعبة الحجلة بالأرقام",
+    "description_en": "Draw a chalk hopscotch grid and hop, count and balance your way to the end.",
+    "description_ar": "ارسموا مربعات الحجلة بالطباشير واقفزوا وعدّوا حتى النهاية.",
+    "age_range": "5-7 years",
+    "duration": "15-30 min",
+    "category": "games",
+    "home_area": "outdoor_nearby",
+    "materials": [
+      {"name_en": "Sidewalk chalk", "name_ar": "طباشير ملونة", "icon": "🖍️"},
+      {"name_en": "Small stone or bean bag", "name_ar": "حجر صغير أو كيس حبوب", "icon": "🪨"},
+      {"name_en": "Water bottle", "name_ar": "قارورة ماء", "icon": "💧"}
+    ],
+    "steps_en": [
+      "Go out in the early morning or evening when it is cool.",
+      "Draw a hopscotch grid with squares numbered 1 to 10.",
+      "Toss the stone onto square 1, then hop through the grid skipping that square.",
+      "On the way back, pick up the stone while balancing on one foot.",
+      "Take turns and move the stone one number higher each round. Remember to drink water!"
+    ],
+    "steps_ar": [
+      "اخرجوا في الصباح الباكر أو في المساء عندما يكون الجو لطيفاً.",
+      "ارسموا مربعات الحجلة مرقمة من 1 إلى 10.",
+      "ارموا الحجر على المربع 1 ثم اقفزوا عبر المربعات متجاوزين ذلك المربع.",
+      "في طريق العودة، التقطوا الحجر وأنتم واقفون على قدم واحدة.",
+      "تناوبوا وانقلوا الحجر إلى الرقم التالي في كل جولة. لا تنسوا شرب الماء!"
+    ]
+  },
+  {
+    "title_en": "Family Obstacle Course",
+    "title_ar": "مسار العوائق العائلي",
+    "description_en": "Design and time a backyard obstacle course, then try to beat your best score.",
+    "description_ar": "صمموا مسار عوائق في الحديقة وقيسوا الوقت ثم حاولوا تحطيم رقمكم.",
+    "age_range": "7-8 years",
+    "duration": "30-45 min",
+    "category": "games",
+    "home_area": "garden",
+    "materials": [
+      {"name_en": "Cushions or cones", "name_ar": "وسائد أو أقماع", "icon": "🔶"},
+      {"name_en": "Jump rope", "name_ar": "حبل قفز", "icon": "🪢"},
+      {"name_en": "Hula hoop or ball", "name_ar": "طوق أو كرة", "icon": "⚽"},
+      {"name_en": "Phone or watch as a timer", "name_ar": "ساعة أو هاتف للتوقيت", "icon": "⏱️"}
+    ],
+    "steps_en": [
+      "Plan the course on paper together: zig-zag, jump, crawl and throw stations.",
+      "Set up the stations in the garden, in the shade if possible.",
+      "Walk through the course slowly once to check it is safe.",
+      "Take turns running the course while someone times it.",
+      "Change one station and try again. Celebrate everyone's best time!"
+    ],
+    "steps_ar": [
+      "خططوا للمسار على الورق معاً: محطات للتعرج والقفز والزحف والرمي.",
+      "جهزوا المحطات في الحديقة، في الظل إن أمكن.",
+      "امشوا في المسار ببطء مرة واحدة للتأكد من أنه آمن.",
+      "تناوبوا على الجري في المسار بينما يقيس أحدكم الوقت.",
+      "غيّروا محطة واحدة وحاولوا مرة أخرى. احتفلوا بأفضل وقت لكل شخص!"
+    ]
+  },
+  {
+    "title_en": "Banana Yogurt Dip",
+    "title_ar": "صلصة الموز واللبن",
+    "description_en": "Little hands mash and stir a sweet, healthy dip for fruit slices.",
+    "description_ar": "يهرس الصغار الموز ويخلطونه لصنع صلصة صحية حلوة لشرائح الفاكهة.",
+    "age_range": "2-3 years",
+    "duration": "10-15 min",
+    "category": "cooking",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Ripe banana", "name_ar": "موزة ناضجة", "icon": "🍌"},
+      {"name_en": "Plain yogurt", "name_ar": "لبن زبادي", "icon": "🥛"},
+      {"name_en": "Bowl and fork", "name_ar": "وعاء وشوكة", "icon": "🥣"},
+      {"name_en": "Apple or pear slices", "name_ar": "شرائح تفاح أو كمثرى", "icon": "🍎"}
+    ],
+    "steps_en": [
+      "Wash hands together and say Bismillah.",
+      "Peel the banana and let your child mash it with a fork.",
+      "Add 3 spoons of yogurt and stir until smooth.",
+      "An adult slices the fruit for dipping.",
+      "Dip, taste and say Alhamdulillah!"
+    ],
+    "steps_ar": [
+      "اغسلوا أيديكم معاً وقولوا بسم الله.",
+      "قشّروا الموزة ودعوا طفلكم يهرسها بالشوكة.",
+      "أضيفوا 3 ملاعق من اللبن وحرّكوا حتى يصبح الخليط ناعماً.",
+      "يقطع أحد الكبار الفاكهة إلى شرائح للتغميس.",
+      "غمّسوا وتذوقوا وقولوا الحمد لله!"
+    ]
+  },
+  {
+    "title_en": "Rainbow Fruit Skewers",
+    "title_ar": "أسياخ فواكه قوس قزح",
+    "description_en": "Thread colorful fruit in rainbow order for a fun, healthy snack.",
+    "description_ar": "رتبوا الفواكه الملونة بترتيب قوس قزح لوجبة خفيفة صحية وممتعة.",
+    "age_range": "3-5 years",
+    "duration": "15-30 min",
+    "category": "cooking",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Strawberries, orange, mango, kiwi, grapes", "name_ar": "فراولة وبرتقال ومانجو وكيوي وعنب", "icon": "🍓"},
+      {"name_en": "Paper straws or blunt wooden skewers", "name_ar": "مصاصات ورقية أو أسياخ خشبية غير حادة", "icon": "🥢"},
+      {"name_en": "Plate", "name_ar": "طبق", "icon": "🍽️"}
+    ],
+    "steps_en": [
+      "Wash hands and fruit together, then say Bismillah.",
+      "An adult cuts the fruit into bite-sized pieces.",
+      "Sort the fruit by color: red, orange, yellow, green, purple.",
+      "Thread the fruit onto the straws in rainbow order.",
+      "Name each color as you eat it and say Alhamdulillah."
+    ],
+    "steps_ar": [
+      "اغسلوا الأيدي والفواكه معاً ثم قولوا بسم الله.",
+      "يقطع أحد الكبار الفواكه إلى قطع صغيرة.",
+      "رتبوا الفواكه حسب اللون: أحمر، برتقالي، أصفر، أخضر، بنفسجي.",
+      "أدخلوا الفواكه في المصاصات بترتيب قوس قزح.",
+      "سمّوا كل لون وأنتم تأكلونه وقولوا الحمد لله."
+    ]
+  },
+  {
+    "title_en": "Mini Veggie Wraps",
+    "title_ar": "لفائف الخضار الصغيرة",
+    "description_en": "Spread, fill and roll your own crunchy wraps with Arabic bread and labneh.",
+    "description_ar": "ادهنوا واحشوا ولفّوا لفائفكم المقرمشة بالخبز العربي واللبنة.",
+    "age_range": "5-7 years",
+    "duration": "15-30 min",
+    "category": "cooking",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Arabic bread", "name_ar": "خبز عربي", "icon": "🫓"},
+      {"name_en": "Labneh", "name_ar": "لبنة", "icon": "🥛"},
+      {"name_en": "Cucumber and carrot sticks", "name_ar": "أصابع خيار وجزر", "icon": "🥒"},
+      {"name_en": "Fresh mint leaves", "name_ar": "أوراق نعناع طازجة", "icon": "🌿"},
+      {"name_en": "Butter knife", "name_ar": "سكين زبدة", "icon": "🔪"}
+    ],
+    "steps_en": [
+      "Wash hands and say Bismillah.",
+      "Spread a thin layer of labneh on the bread with a butter knife.",
+      "Lay cucumber, carrot and a few mint leaves in a line at one edge.",
+      "Roll the bread up tightly and an adult cuts it into small rounds.",
+      "Share the wraps with the family and say Alhamdulillah."
+    ],
+    "steps_ar": [
+      "اغسلوا أيديكم وقولوا بسم الله.",
+      "ادهنوا طبقة رقيقة من اللبنة على الخبز بسكين الزبدة.",
+      "ضعوا الخيار والجزر وبعض أوراق النعناع في صف على طرف الخبز.",
+      "لفّوا الخبز بإحكام ثم يقطعه أحد الكبار إلى دوائر صغيرة.",
+      "شاركوا اللفائف مع العائلة وقولوا الحمد لله."
+    ]
+  },
+  {
+    "title_en": "Date and Oat Energy Balls",
+    "title_ar": "كرات الطاقة بالتمر والشوفان",
+    "description_en": "Mix, measure and roll no-bake energy balls made with UAE dates.",
+    "description_ar": "اخلطوا وقيسوا ودحرجوا كرات طاقة بدون خبز مصنوعة من التمر الإماراتي.",
+    "age_range": "7-8 years",
+    "duration": "30-45 min",
+    "category": "cooking",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Pitted dates (1 cup)", "name_ar": "تمر منزوع النوى (كوب)", "icon": "🌴"},
+      {"name_en": "Rolled oats (1 cup)", "name_ar": "شوفان (كوب)", "icon": "🥣"},
+      {"name_en": "Desiccated coconut", "name_ar": "جوز هند مبشور", "icon": "🥥"},
+      {"name_en": "Measuring cups", "name_ar": "أكواب قياس", "icon": "🥄"},
+      {"name_en": "Food processor (adult use)", "name_ar": "محضّرة طعام (للكبار)", "icon": "⚙️"}
+    ],
+    "steps_en": [
+      "Wash hands and say Bismillah.",
+      "Your child measures the dates and oats into the bowl.",
+      "An adult blends them in the food processor until sticky.",
+      "Roll the mixture into small balls and coat them in coconut.",
+      "Chill for 20 minutes, then enjoy one each and say Alhamdulillah."
+    ],
+    "steps_ar": [
+      "اغسلوا أيديكم وقولوا بسم الله.",
+      "يقيس طفلكم التمر والشوفان ويضعهما في الوعاء.",
+      "يخلطهما أحد الكبار في المحضّرة حتى يصبح الخليط لزجاً.",
+      "دحرجوا الخليط إلى كرات صغيرة وغطوها بجوز الهند.",
+      "بردوها 20 دقيقة ثم تناولوا واحدة لكل شخص وقولوا الحمد لله."
+    ]
+  },
+  {
+    "title_en": "Sticker Collage",
+    "title_ar": "لوحة الملصقات",
+    "description_en": "Peel and stick colorful shapes to build fine motor skills and talk about colors.",
+    "description_ar": "انزعوا الملصقات الملونة والصقوها لتقوية مهارات اليد والتحدث عن الألوان.",
+    "age_range": "2-3 years",
+    "duration": "10-15 min",
+    "category": "creative",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Large stickers", "name_ar": "ملصقات كبيرة", "icon": "⭐"},
+      {"name_en": "Sheet of paper or cardboard", "name_ar": "ورقة أو كرتون", "icon": "📄"},
+      {"name_en": "Crayons", "name_ar": "ألوان شمعية", "icon": "🖍️"}
+    ],
+    "steps_en": [
+      "Sit together at a table or on the floor.",
+      "Lift the corner of each sticker so small fingers can peel it easily.",
+      "Let your child stick them anywhere on the paper.",
+      "Name the colors and shapes together as they stick them.",
+      "Hang the artwork up and praise their effort."
+    ],
+    "steps_ar": [
+      "اجلسوا معاً إلى الطاولة أو على الأرض.",
+      "ارفعوا طرف كل ملصق ليسهل على الأصابع الصغيرة نزعه.",
+      "دعوا طفلكم يلصقها في أي مكان على الورقة.",
+      "سمّوا الألوان والأشكال معاً أثناء اللصق.",
+      "علّقوا العمل الفني وامدحوا مجهود طفلكم."
+    ]
+  },
+  {
+    "title_en": "Leaf Print Art",
+    "title_ar": "فن طباعة أوراق الشجر",
+    "description_en": "Collect leaves from the garden and stamp them with paint to make prints.",
+    "description_ar": "اجمعوا أوراق الشجر من الحديقة واطبعوها بالألوان لصنع لوحات جميلة.",
+    "age_range": "3-5 years",
+    "duration": "15-30 min",
+    "category": "creative",
+    "home_area": "garden",
+    "materials": [
+      {"name_en": "Fallen leaves of different shapes", "name_ar": "أوراق شجر متساقطة بأشكال مختلفة", "icon": "🍃"},
+      {"name_en": "Washable paint", "name_ar": "ألوان مائية قابلة للغسل", "icon": "🎨"},
+      {"name_en": "Paper", "name_ar": "ورق", "icon": "📄"},
+      {"name_en": "Brush or sponge", "name_ar": "فرشاة أو إسفنجة", "icon": "🖌️"}
+    ],
+    "steps_en": [
+      "Collect fallen leaves in the garden in the cool early morning.",
+      "Paint the bumpy back side of a leaf.",
+      "Press it paint-side down on the paper and rub gently.",
+      "Peel it off to reveal the print.",
+      "Make a pattern with different leaves and colors."
+    ],
+    "steps_ar": [
+      "اجمعوا الأوراق المتساقطة من الحديقة في الصباح الباكر.",
+      "لوّنوا الجهة الخلفية البارزة من الورقة.",
+      "اضغطوا الورقة على الورق بالجهة الملونة وافركوا بلطف.",
+      "ارفعوها لتظهر الطبعة.",
+      "اصنعوا نمطاً بأوراق وألوان مختلفة."
+    ]
+  },
+  {
+    "title_en": "Paper Plate Falcon",
+    "title_ar": "صقر من الأطباق الورقية",
+    "description_en": "Craft the UAE's national bird from a paper plate and learn falcon facts.",
+    "description_ar": "اصنعوا الطائر الوطني لدولة الإمارات من طبق ورقي وتعرفوا على معلومات عن الصقر.",
+    "age_range": "5-7 years",
+    "duration": "30-45 min",
+    "category": "creative",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Paper plates (2)", "name_ar": "طبقان ورقيان", "icon": "🍽️"},
+      {"name_en": "Brown and yellow crayons or paint", "name_ar": "ألوان بنية وصفراء", "icon": "🖍️"},
+      {"name_en": "Child-safe scissors", "name_ar": "مقص آمن للأطفال", "icon": "✂️"},
+      {"name_en": "Glue stick", "name_ar": "صمغ", "icon": "🧴"}
+    ],
+    "steps_en": [
+      "Color one plate brown for the falcon's body.",
+      "Cut the second plate in half to make two wings and color them.",
+      "Glue the wings to the sides of the body.",
+      "Draw eyes and a yellow hooked beak.",
+      "Share a fact: falcons can dive faster than a car on the highway!"
+    ],
+    "steps_ar": [
+      "لوّنوا الطبق الأول باللون البني ليكون جسم الصقر.",
+      "قصّوا الطبق الثاني إلى نصفين لصنع جناحين ولوّنوهما.",
+      "الصقوا الجناحين على جانبي الجسم.",
+      "ارسموا العينين ومنقاراً أصفر معقوفاً.",
+      "شاركوا معلومة: الصقر يستطيع الانقضاض أسرع من سيارة على الطريق السريع!"
+    ]
+  },
+  {
+    "title_en": "Recycled Dhow Boat",
+    "title_ar": "قارب الداو من المواد المعاد تدويرها",
+    "description_en": "Build a traditional Emirati dhow from recycled materials and test if it floats.",
+    "description_ar": "ابنوا قارب داو إماراتياً تقليدياً من مواد معاد تدويرها واختبروا إن كان يطفو.",
+    "age_range": "7-8 years",
+    "duration": "30-45 min",
+    "category": "creative",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Juice carton or small box", "name_ar": "علبة عصير كرتونية أو صندوق صغير", "icon": "📦"},
+      {"name_en": "Paper for the sail", "name_ar": "ورق للشراع", "icon": "📄"},
+      {"name_en": "Straw or stick for the mast", "name_ar": "مصاصة أو عود للصاري", "icon": "🥢"},
+      {"name_en": "Tape and scissors", "name_ar": "شريط لاصق ومقص", "icon": "✂️"}
+    ],
+    "steps_en": [
+      "Look at a picture of a dhow together and talk about pearl diving history.",
+      "Cut the carton lengthwise to make the boat's hull.",
+      "Tape the straw upright in the middle as a mast.",
+      "Cut a triangle sail, decorate it, and tape it to the mast.",
+      "Test your dhow in a sink or tub of water. Does it float?"
+    ],
+    "steps_ar": [
+      "شاهدوا صورة لقارب الداو معاً وتحدثوا عن تاريخ الغوص على اللؤلؤ.",
+      "قصّوا العلبة طولياً لصنع هيكل القارب.",
+      "ثبتوا المصاصة في المنتصف بشكل عمودي لتكون الصاري.",
+      "قصّوا شراعاً مثلثاً وزيّنوه وثبتوه على الصاري.",
+      "اختبروا قاربكم في حوض ماء. هل يطفو؟"
+    ]
+  },
+  {
+    "title_en": "Texture Treasure Walk",
+    "title_ar": "نزهة كنوز الملمس",
+    "description_en": "Find and feel things that are soft, rough, smooth and bumpy on a short walk.",
+    "description_ar": "ابحثوا عن أشياء ناعمة وخشنة وملساء ومتعرجة والمسوها في نزهة قصيرة.",
+    "age_range": "2-3 years",
+    "duration": "15-30 min",
+    "category": "nature",
+    "home_area": "outdoor_nearby",
+    "materials": [
+      {"name_en": "Small bag or basket", "name_ar": "كيس صغير أو سلة", "icon": "🧺"},
+      {"name_en": "Hat and water", "name_ar": "قبعة وماء", "icon": "🧢"}
+    ],
+    "steps_en": [
+      "Go out in the early morning or evening when it is cooler.",
+      "Walk slowly and look for leaves, stones, sand and tree bark.",
+      "Touch each one and say a word: soft, rough, smooth or bumpy.",
+      "Collect a few safe treasures in the bag.",
+      "At home, line them up and feel them again together."
+    ],
+    "steps_ar": [
+      "اخرجوا في الصباح الباكر أو في المساء عندما يكون الجو أبرد.",
+      "امشوا ببطء وابحثوا عن أوراق وحجارة ورمل ولحاء الأشجار.",
+      "المسوا كل شيء وقولوا كلمة: ناعم، خشن، أملس أو متعرج.",
+      "اجمعوا بعض الكنوز الآمنة في الكيس.",
+      "في البيت، رتبوها في صف والمسوها مرة أخرى معاً."
+    ]
+  },
+  {
+    "title_en": "Balcony Bird Water Station",
+    "title_ar": "محطة مياه للطيور في الشرفة",
+    "description_en": "Set up a shallow water dish for thirsty birds and watch who visits.",
+    "description_ar": "جهزوا طبق ماء ضحلاً للطيور العطشى وراقبوا من يزوركم.",
+    "age_range": "3-5 years",
+    "duration": "15-30 min",
+    "category": "nature",
+    "home_area": "balcony",
+    "materials": [
+      {"name_en": "Shallow dish or plant saucer", "name_ar": "طبق ضحل أو صحن أصيص", "icon": "🥏"},
+      {"name_en": "Water", "name_ar": "ماء", "icon": "💧"},
+      {"name_en": "A few pebbles", "name_ar": "بعض الحصى", "icon": "🪨"}
+    ],
+    "steps_en": [
+      "Talk about how birds also get thirsty in the hot UAE summer.",
+      "Place pebbles in the dish so small birds can stand safely.",
+      "Fill the dish with a little fresh water.",
+      "Put it in a quiet, shady corner of the balcony.",
+      "Check each day, refill the water, and count the birds you see."
+    ],
+    "steps_ar": [
+      "تحدثوا عن أن الطيور أيضاً تعطش في صيف الإمارات الحار.",
+      "ضعوا الحصى في الطبق لتقف الطيور الصغيرة بأمان.",
+      "املؤوا الطبق بقليل من الماء النظيف.",
+      "ضعوه في زاوية هادئة ومظللة من الشرفة.",
+      "تفقدوه كل يوم وجددوا الماء وعدّوا الطيور التي ترونها."
+    ]
+  },
+  {
+    "title_en": "Grow a Bean in a Jar",
+    "title_ar": "ازرع حبة فاصولياء في برطمان",
+    "description_en": "Watch roots and shoots grow day by day in a see-through jar.",
+    "description_ar": "راقبوا الجذور والبراعم وهي تنمو يوماً بعد يوم في برطمان شفاف.",
+    "age_range": "5-7 years",
+    "duration": "15-30 min",
+    "category": "nature",
+    "home_area": "balcony",
+    "materials": [
+      {"name_en": "Clear jar or cup", "name_ar": "برطمان أو كوب شفاف", "icon": "🫙"},
+      {"name_en": "Cotton wool or paper towels", "name_ar": "قطن أو مناديل ورقية", "icon": "🧻"},
+      {"name_en": "Dried beans", "name_ar": "حبوب فاصولياء مجففة", "icon": "🫘"},
+      {"name_en": "Water", "name_ar": "ماء", "icon": "💧"}
+    ],
+    "steps_en": [
+      "Fill the jar with damp cotton or folded paper towels.",
+      "Push 2-3 beans between the cotton and the glass so you can see them.",
+      "Place the jar somewhere bright but out of harsh direct sun.",
+      "Add a little water every day to keep the cotton damp.",
+      "Draw what you see every two days in a growth diary."
+    ],
+    "steps_ar": [
+      "املؤوا البرطمان بالقطن المبلل أو المناديل المطوية.",
+      "ضعوا 2-3 حبات بين القطن والزجاج لتتمكنوا من رؤيتها.",
+      "ضعوا البرطمان في مكان مضيء بعيداً عن الشمس المباشرة القوية.",
+      "أضيفوا قليلاً من الماء كل يوم ليبقى القطن رطباً.",
+      "ارسموا ما ترونه كل يومين في دفتر النمو."
+    ]
+  },
+  {
+    "title_en": "Evening Moon Journal",
+    "title_ar": "دفتر مراقبة القمر",
+    "description_en": "Observe and draw the moon each evening to discover the Hijri month's phases.",
+    "description_ar": "راقبوا القمر وارسموه كل مساء لاكتشاف أطوار الشهر الهجري.",
+    "age_range": "7-8 years",
+    "duration": "10-15 min",
+    "category": "nature",
+    "home_area": "outdoor_nearby",
+    "materials": [
+      {"name_en": "Notebook", "name_ar": "دفتر", "icon": "📓"},
+      {"name_en": "Pencil", "name_ar": "قلم رصاص", "icon": "✏️"}
+    ],
+    "steps_en": [
+      "Step outside or onto the balcony after Maghrib.",
+      "Find the moon and look closely at its shape.",
+      "Draw it in the notebook and write the date.",
+      "Repeat every evening for two weeks.",
+      "Compare the drawings: how does the moon change through the Hijri month?"
+    ],
+    "steps_ar": [
+      "اخرجوا أو قفوا في الشرفة بعد صلاة المغرب.",
+      "ابحثوا عن القمر وانظروا جيداً إلى شكله.",
+      "ارسموه في الدفتر واكتبوا التاريخ.",
+      "كرروا ذلك كل مساء لمدة أسبوعين.",
+      "قارنوا الرسومات: كيف يتغير القمر خلال الشهر الهجري؟"
+    ]
+  },
+  {
+    "title_en": "Picture Book Sound Effects",
+    "title_ar": "أصوات قصة الصور",
+    "description_en": "Read a picture book together and add animal and nature sounds as you go.",
+    "description_ar": "اقرؤوا كتاباً مصوراً معاً وأضيفوا أصوات الحيوانات والطبيعة أثناء القراءة.",
+    "age_range": "2-3 years",
+    "duration": "5-10 min",
+    "category": "reading",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Picture book", "name_ar": "كتاب مصور", "icon": "📖"},
+      {"name_en": "Cozy cushion", "name_ar": "وسادة مريحة", "icon": "🛋️"}
+    ],
+    "steps_en": [
+      "Cuddle up together in a cozy spot.",
+      "Read the book slowly and point to each picture.",
+      "Pause and make the sound for each animal or object you see.",
+      "Invite your child to make the sound before you do.",
+      "Read it again: little ones love repetition!"
+    ],
+    "steps_ar": [
+      "اجلسوا معاً في مكان مريح ودافئ.",
+      "اقرؤوا الكتاب ببطء وأشيروا إلى كل صورة.",
+      "توقفوا وأصدروا صوت كل حيوان أو شيء ترونه.",
+      "شجعوا طفلكم على إصدار الصوت قبلكم.",
+      "اقرؤوه مرة أخرى: الصغار يحبون التكرار!"
+    ]
+  },
+  {
+    "title_en": "Story Basket",
+    "title_ar": "سلة الحكايات",
+    "description_en": "Pull surprise objects from a basket and weave them into a story together.",
+    "description_ar": "أخرجوا أشياء مفاجئة من السلة ونسجوها معاً في حكاية واحدة.",
+    "age_range": "3-5 years",
+    "duration": "15-30 min",
+    "category": "reading",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Basket or bag", "name_ar": "سلة أو كيس", "icon": "🧺"},
+      {"name_en": "4-5 household objects or toys", "name_ar": "4-5 أغراض منزلية أو ألعاب", "icon": "🧸"}
+    ],
+    "steps_en": [
+      "Secretly fill the basket with 4-5 objects (a spoon, toy camel, cup, hat...).",
+      "Start the story: 'Once upon a time, in the desert...'",
+      "Your child pulls out one object and adds it to the story.",
+      "Keep taking turns until the basket is empty.",
+      "End the story with a lesson, like being kind or sharing."
+    ],
+    "steps_ar": [
+      "املؤوا السلة سراً بـ 4-5 أغراض (ملعقة، جمل لعبة، كوب، قبعة...).",
+      "ابدؤوا الحكاية: «كان يا ما كان، في الصحراء...»",
+      "يخرج طفلكم غرضاً واحداً ويضيفه إلى الحكاية.",
+      "استمروا بالتناوب حتى تفرغ السلة.",
+      "اختموا الحكاية بعبرة مثل اللطف أو المشاركة."
+    ]
+  },
+  {
+    "title_en": "Make Your Own Mini Book",
+    "title_ar": "اصنع كتابك الصغير",
+    "description_en": "Fold, staple, write and illustrate a little book starring your child.",
+    "description_ar": "اطووا الأوراق ودبّسوها واكتبوا وارسموا كتاباً صغيراً بطله طفلكم.",
+    "age_range": "5-7 years",
+    "duration": "30-45 min",
+    "category": "reading",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "3 sheets of paper", "name_ar": "3 أوراق", "icon": "📄"},
+      {"name_en": "Stapler (adult use)", "name_ar": "دباسة (للكبار)", "icon": "📎"},
+      {"name_en": "Colored pencils", "name_ar": "أقلام ملونة", "icon": "✏️"}
+    ],
+    "steps_en": [
+      "Fold the sheets in half and an adult staples the spine.",
+      "Decide on a title together, like 'My Day at the Beach'.",
+      "Your child draws one picture per page.",
+      "Write a short sentence under each picture (they can dictate to you).",
+      "Read the finished book aloud to the whole family."
+    ],
+    "steps_ar": [
+      "اطووا الأوراق من المنتصف ويدبّس أحد الكبار طرف الكتاب.",
+      "اختاروا عنواناً معاً مثل «يومي على الشاطئ».",
+      "يرسم طفلكم صورة واحدة في كل صفحة.",
+      "اكتبوا جملة قصيرة تحت كل صورة (يمكنه أن يمليها عليكم).",
+      "اقرؤوا الكتاب كاملاً بصوت عالٍ لكل العائلة."
+    ]
+  },
+  {
+    "title_en": "Grandparents' Story Night",
+    "title_ar": "ليلة حكايات الأجداد",
+    "description_en": "Interview a grandparent about life in the UAE when they were young.",
+    "description_ar": "حاوروا الجد أو الجدة عن الحياة في الإمارات عندما كانوا صغاراً.",
+    "age_range": "7-8 years",
+    "duration": "30-45 min",
+    "category": "reading",
+    "home_area": "living_room",
+    "materials": [
+      {"name_en": "Notebook", "name_ar": "دفتر", "icon": "📓"},
+      {"name_en": "Pencil", "name_ar": "قلم رصاص", "icon": "✏️"},
+      {"name_en": "Arabic coffee and dates", "name_ar": "قهوة عربية وتمر", "icon": "☕"}
+    ],
+    "steps_en": [
+      "Help your child write 4-5 questions, like 'What games did you play?'",
+      "Sit together with a grandparent (in person or by phone).",
+      "Your child asks the questions and writes short notes.",
+      "Ask a follow-up question about the most surprising answer.",
+      "Retell the story to the family at dinner."
+    ],
+    "steps_ar": [
+      "ساعدوا طفلكم على كتابة 4-5 أسئلة مثل «ما الألعاب التي كنت تلعبها؟»",
+      "اجلسوا مع الجد أو الجدة (وجهاً لوجه أو بالهاتف).",
+      "يطرح طفلكم الأسئلة ويكتب ملاحظات قصيرة.",
+      "اطرحوا سؤالاً إضافياً عن الإجابة الأكثر إدهاشاً.",
+      "أعيدوا رواية الحكاية للعائلة على العشاء."
+    ]
+  },
+  {
+    "title_en": "Sink or Float",
+    "title_ar": "يغوص أم يطفو؟",
+    "description_en": "Guess, drop and discover which kitchen items sink or float in water.",
+    "description_ar": "خمّنوا وأسقطوا واكتشفوا أي أغراض المطبخ تغوص أو تطفو في الماء.",
+    "age_range": "2-3 years",
+    "duration": "10-15 min",
+    "category": "science",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Large bowl of water", "name_ar": "وعاء كبير من الماء", "icon": "🥣"},
+      {"name_en": "Spoon, plastic cup, apple, sponge, stone", "name_ar": "ملعقة وكوب بلاستيكي وتفاحة وإسفنجة وحجر", "icon": "🍎"},
+      {"name_en": "Towel", "name_ar": "منشفة", "icon": "🧻"}
+    ],
+    "steps_en": [
+      "Put a towel down and place the bowl of water on it.",
+      "Hold up one object and ask: 'Will it sink or float?'",
+      "Let your child drop it in and watch closely.",
+      "Say the answer together: 'It floats!' or 'It sinks!'",
+      "Always stay right beside your child near water."
+    ],
+    "steps_ar": [
+      "ضعوا منشفة وفوقها وعاء الماء.",
+      "ارفعوا غرضاً واسألوا: «هل سيغوص أم سيطفو؟»",
+      "دعوا طفلكم يسقطه في الماء وراقبوا جيداً.",
+      "قولوا الإجابة معاً: «إنه يطفو!» أو «إنه يغوص!»",
+      "ابقوا دائماً بجانب طفلكم قرب الماء."
+    ]
+  },
+  {
+    "title_en": "Color Mixing Cups",
+    "title_ar": "أكواب مزج الألوان",
+    "description_en": "Mix colored water to discover how two colors make a brand new one.",
+    "description_ar": "امزجوا الماء الملون لتكتشفوا كيف يصنع لونان لوناً جديداً.",
+    "age_range": "3-5 years",
+    "duration": "15-30 min",
+    "category": "science",
+    "home_area": "kitchen",
+    "materials": [
+      {"name_en": "Clear cups (6)", "name_ar": "6 أكواب شفافة", "icon": "🥤"},
+      {"name_en": "Food coloring: red, yellow, blue", "name_ar": "ملونات طعام: أحمر وأصفر وأزرق", "icon": "🎨"},
+      {"name_en": "Water and a spoon", "name_ar": "ماء وملعقة", "icon": "💧"}
+    ],
+    "steps_en": [
+      "Fill three cups with water and add one color to each.",
+      "Ask your child to guess what red and yellow make together.",
+      "Pour a little red and a little yellow into an empty cup and stir.",
+      "Repeat with yellow and blue, then blue and red.",
+      "Name the new colors: orange, green and purple!"
+    ],
+    "steps_ar": [
+      "املؤوا ثلاثة أكواب بالماء وأضيفوا لوناً واحداً لكل كوب.",
+      "اطلبوا من طفلكم أن يخمّن ماذا يصنع الأحمر والأصفر معاً.",
+      "اسكبوا قليلاً من الأحمر والأصفر في كوب فارغ وحرّكوا.",
+      "كرروا مع الأصفر والأزرق، ثم الأزرق والأحمر.",
+      "سمّوا الألوان الجديدة: برتقالي وأخضر وبنفسجي!"
+    ]
+  },
+  {
+    "title_en": "Fizzy Volcano",
+    "title_ar": "البركان الفوار",
+    "description_en": "Make a foamy eruption with baking soda and vinegar and learn about reactions.",
+    "description_ar": "اصنعوا ثوراناً رغوياً ببيكربونات الصوديوم والخل وتعرفوا على التفاعلات.",
+    "age_range": "5-7 years",
+    "duration": "15-30 min",
+    "category": "science",
+    "home_area": "balcony",
+    "materials": [
+      {"name_en": "Baking soda (2 spoons)", "name_ar": "بيكربونات الصوديوم (ملعقتان)", "icon": "🧂"},
+      {"name_en": "Vinegar (half a cup)", "name_ar": "خل (نصف كوب)", "icon": "🫗"},
+      {"name_en": "Cup and a tray", "name_ar": "كوب وصينية", "icon": "🥤"},
+      {"name_en": "Dish soap and food coloring (optional)", "name_ar": "سائل جلي وملون طعام (اختياري)", "icon": "🎨"}
+    ],
+    "steps_en": [
+      "Place the cup on a tray on the balcony to catch the mess.",
+      "Add baking soda, a drop of dish soap and some food coloring to the cup.",
+      "Ask your child to predict what will happen.",
+      "Pour in the vinegar and step back to watch the eruption!",
+      "Explain: mixing them makes a gas called carbon dioxide that creates bubbles."
+    ],
+    "steps_ar": [
+      "ضعوا الكوب على صينية في الشرفة لتجنب الفوضى.",
+      "أضيفوا بيكربونات الصوديوم ونقطة من سائل الجلي وقليلاً من الملون إلى الكوب.",
+      "اطلبوا من طفلكم أن يتوقع ما سيحدث.",
+      "اسكبوا الخل وابتعدوا قليلاً لمشاهدة الثوران!",
+      "اشرحوا: خلطهما يصنع غازاً اسمه ثاني أكسيد الكربون وهو الذي يكوّن الفقاعات."
+    ]
+  },
+  {
+    "title_en": "Shadow Sundial",
+    "title_ar": "المزولة الشمسية",
+    "description_en": "Track a stick's shadow through the morning to tell time like people long ago.",
+    "description_ar": "تتبعوا ظل العصا خلال الصباح لمعرفة الوقت كما كان يفعل الناس قديماً.",
+    "age_range": "7-8 years",
+    "duration": "30-45 min",
+    "category": "science",
+    "home_area": "garden",
+    "materials": [
+      {"name_en": "Straight stick", "name_ar": "عصا مستقيمة", "icon": "🪵"},
+      {"name_en": "Small stones", "name_ar": "حجارة صغيرة", "icon": "🪨"},
+      {"name_en": "Chalk or marker", "name_ar": "طباشير أو قلم", "icon": "🖍️"},
+      {"name_en": "Watch", "name_ar": "ساعة", "icon": "⌚"}
+    ],
+    "steps_en": [
+      "Start early in the morning before it gets hot.",
+      "Push the stick upright into the ground in an open sunny spot.",
+      "Every 30 minutes, place a stone at the tip of the shadow and write the time.",
+      "Notice how the shadow moves and gets shorter towards noon.",
+      "Talk about how people once used shadows to know prayer and work times."
+    ],
+    "steps_ar": [
+      "ابدؤوا في الصباح الباكر قبل أن يشتد الحر.",
+      "اغرسوا العصا بشكل عمودي في الأرض في مكان مشمس ومفتوح.",
+      "كل 30 دقيقة، ضعوا حجراً عند طرف الظل واكتبوا الوقت.",
+      "لاحظوا كيف يتحرك الظل ويقصر كلما اقترب الظهر.",
+      "تحدثوا عن كيف كان الناس قديماً يستخدمون الظل لمعرفة أوقات الصلاة والعمل."
+    ]
+  }
+]

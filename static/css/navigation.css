@@ -92,6 +92,11 @@ body.has-side-nav {
         padding-bottom: 70px; /* Add space for bottom nav */
     }
     
+    /* Keep page content clear of the fixed bottom nav */
+    body:has(.bottom-navigation) {
+        padding-bottom: 90px;
+    }
+    
     /* Show bottom navigation */
     .bottom-navigation {
         display: flex;

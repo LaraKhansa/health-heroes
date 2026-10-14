@@ -84,7 +84,7 @@ function updatePageText() {
     // Header
     const welcomeText = document.querySelector('.welcome-text');
     const appTitle = document.querySelector('.app-title');
-    const logoutBtn = document.querySelector('.logout-btn');
+    const logoutBtn = document.getElementById('logoutBtn');
     
     if (welcomeText) {
         const userName = welcomeText.textContent.split(', ')[1] || 'User';

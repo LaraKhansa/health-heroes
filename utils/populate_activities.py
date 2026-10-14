@@ -9,9 +9,11 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import argparse
+
 from main import app
 from db.models import db, Activity
-from utils.activity_generator import generate_all_activities
+from db.seed import build_activity, load_seed_activities
 
 
 def save_activities_to_database(activities_data):
@@ -31,24 +33,7 @@ def save_activities_to_database(activities_data):
     
     for idx, activity_data in enumerate(activities_data, 1):
         try:
-            # Create Activity object
-            activity = Activity(
-                title_en=activity_data['title_en'],
-                title_ar=activity_data['title_ar'],
-                description_en=activity_data['description_en'],
-                description_ar=activity_data['description_ar'],
-                age_range=activity_data['age_range'],
-                duration=activity_data['duration'],
-                category=activity_data['category']
-            )
-            
-            # Set JSON fields
-            activity.set_materials(activity_data['materials'])
-            activity.set_steps_en(activity_data['steps_en'])
-            activity.set_steps_ar(activity_data['steps_ar'])
-            activity.set_home_requirements([activity_data['home_area']])
-            
-            db.session.add(activity)
+            db.session.add(build_activity(activity_data))
             saved_count += 1
             
             # Commit in batches of 10
@@ -57,8 +42,8 @@ def save_activities_to_database(activities_data):
                 print(f"Saved {saved_count} activities...")
                 
         except Exception as e:
+            # A malformed activity fails before it is added, so earlier ones are unaffected
             print(f"Error saving activity {idx}: {e}")
-            db.session.rollback()
             continue
     
     # Final commit
@@ -74,10 +59,21 @@ def populate_database(activities_per_combination=5):
     """
     Main function: Generate and save activities
     """
+    from utils.activity_generator import generate_all_activities
+    
     with app.app_context():
         print("=" * 70)
         print("HEALTH HEROES - ACTIVITY GENERATION")
         print("=" * 70)
+        
+        # Generate first so a failed run never leaves the database empty
+        print("\nStarting AI generation...")
+        print("=" * 70)
+        activities_data = generate_all_activities(activities_per_combination)
+        
+        if not activities_data:
+            print("\nNo activities generated! Existing activities were kept.")
+            return
         
         # Clear old activities
         print("\nClearing old activities...")
@@ -88,15 +84,6 @@ def populate_database(activities_per_combination=5):
             print(f"Cleared {old_count} old activities")
         else:
             print("Database is empty")
-        
-        # Generate activities with AI
-        print("\nStarting AI generation...")
-        print("=" * 70)
-        activities_data = generate_all_activities(activities_per_combination)
-        
-        if not activities_data:
-            print("\nNo activities generated! Aborting...")
-            return
         
         # Save to database
         print("\n" + "=" * 70)
@@ -142,45 +129,39 @@ def show_statistics():
         print("=" * 70)
 
 
+def reset_to_seed():
+    """Replace all activities with the bundled starter set"""
+    with app.app_context():
+        Activity.query.delete()
+        db.session.commit()
+        count = load_seed_activities()
+        print(f"🌱 Loaded {count} starter activities")
+
+
 if __name__ == "__main__":
-    print("\n" + "=" * 70)
-    print("  🌟 HEALTH HEROES - ACTIVITY DATABASE MANAGER")
-    print("=" * 70)
-    print("\nOptions:")
-    print("1. Generate and save activities")
-    print("2. Show statistics")
-    print("3. Exit")
+    from utils.constants import HOME_AREAS, ACTIVITY_CATEGORIES, AGE_RANGES
     
-    choice = input("\nEnter choice (1-3): ").strip()
+    parser = argparse.ArgumentParser(description="Manage the activities database")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--generate', type=int, metavar='N',
+                       help='Generate N activities per combination with Gemini (replaces existing activities)')
+    group.add_argument('--seed', action='store_true',
+                       help='Replace existing activities with the bundled starter set (no API key needed)')
+    group.add_argument('--stats', action='store_true', help='Show database statistics')
+    parser.add_argument('--yes', action='store_true', help='Skip the confirmation prompt')
+    args = parser.parse_args()
     
-    if choice == "1":
-        try:
-            num = input("\nActivities per combination (1-5, recommended 3): ").strip()
-            num = int(num) if num else 3
-            if num < 1 or num > 10:
-                print("⚠️  Using default: 3")
-                num = 3
-        except:
-            num = 3
-        
-        # Show estimate
-        from utils.constants import HOME_AREAS, ACTIVITY_CATEGORIES, AGE_RANGES
+    if args.stats:
+        show_statistics()
+    elif args.seed:
+        reset_to_seed()
+    else:
+        num = max(1, min(args.generate, 10))
         total_combinations = len(HOME_AREAS) * len(ACTIVITY_CATEGORIES) * len(AGE_RANGES)
-        total_activities = total_combinations * num
-        estimated_time = total_combinations * 3 // 60
+        print(f"\n🎯 Will generate up to {total_combinations * num} activities "
+              f"with {total_combinations} API calls")
         
-        print(f"\n🎯 Will generate: {total_activities} activities")
-        print(f"⏱️  Estimated time: ~{estimated_time} minutes")
-        
-        confirm = input("\nProceed? (yes/no): ").strip().lower()
-        
-        if confirm in ['yes', 'y']:
+        if args.yes or input("\nProceed? (yes/no): ").strip().lower() in ['yes', 'y']:
             populate_database(activities_per_combination=num)
         else:
             print("❌ Cancelled")
-    
-    elif choice == "2":
-        show_statistics()
-    
-    else:
-        print("👋 Goodbye!")

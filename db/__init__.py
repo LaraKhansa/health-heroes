@@ -17,4 +17,6 @@ def init_db(app):
     with app.app_context():
         # Create all tables
         db.create_all()
-        print("✅ Database initialized!")
+        
+        from db.seed import seed_activities_if_empty
+        seed_activities_if_empty()

@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, session
-from db import db
+from flask import Blueprint, render_template, session
+from app.decorators import login_required
 from app.dashboard.dashboard_helpers import (
     get_family_screen_free_activities_count,
     get_family_healthy_meals_count,
@@ -11,17 +11,12 @@ from app.dashboard.dashboard_helpers import (
 dashboard_bp = Blueprint("dashboard", __name__, template_folder="templates")
 
 @dashboard_bp.route("/dashboard")
+@login_required
 def dashboard():
     """
     Family Dashboard - Shows accurate family-specific statistics
     """
-    # --- Get user ID from session ---
     user_id = session.get('user_id')
-    
-    # If user not logged in, redirect (this should be handled by login_required decorator in production)
-    if not user_id:
-        from flask import redirect, url_for
-        return redirect(url_for('auth.login'))
     
     # --- Language handling ---
     language = session.get('language', 'en')
